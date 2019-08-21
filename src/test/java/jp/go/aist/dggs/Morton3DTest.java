@@ -45,24 +45,4 @@ public class Morton3DTest {
         assertEquals(243658L, result4[1]);
         assertEquals(2097151L, result4[2]);
     }
-
-    @Test
-    public void getPDCode() {
-        assertEquals("3650", Morton3D.getPDCode(1960L));
-        assertEquals("365353604251514351575", Morton3D.getPDCode(4421822648190882685L));
-        assertEquals("3650", Morton3D.getPDCode(new BigInteger("1960")));
-        assertEquals("365353604251514351575", Morton3D.getPDCode(new BigInteger("4421822648190882685")));
-        assertEquals("36535360425151435157513012137203", Morton3D.getPDCode(new BigInteger("37983167325383909396374404739")));
-    }
-
-    @Test
-    public void getMCode() {
-        assertEquals(1960L, Morton3D.getMCode("000000000000000003650"));
-        assertEquals(1960L, Morton3D.getMCode("3650"));
-        assertEquals(4421822648190882685L, Morton3D.getMCode("365353604251514351575"));
-        assertEquals(new BigInteger("1960"), Morton3D.getMCode("000000000000000003650"));
-        assertEquals(new BigInteger("1960"), Morton3D.getMCode("3650"));
-        assertEquals(new BigInteger("4421822648190882685"), Morton3D.getMCode("365353604251514351575"));
-        assertEquals(new BigInteger("37983167325383909396374404739"), Morton3D.getMCode("36535360425151435157513012137203"));
-    }
 }
