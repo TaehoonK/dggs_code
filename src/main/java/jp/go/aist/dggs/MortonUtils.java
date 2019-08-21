@@ -15,61 +15,6 @@ import java.util.Map;
 
 public class MortonUtils {
     /**
-     * Function to generate binary number with resolution applied
-     *
-     * @param resolution Resolution of generate Morton code
-     * @param binaryList Input binary numbers
-     * @return Binary number with resolution applied
-     */
-    static String[] applyResolution(int resolution, String[] binaryList) {
-        String[] result = new String[binaryList.length];
-
-        int fixedLength = binaryList[0].length();
-        for (String binary: binaryList) {
-            if(fixedLength < binary.length())
-                fixedLength = binary.length();
-        }
-
-        for (int i = 0; i < binaryList.length; i++) {
-            String binary = binaryList[i];
-            if(binary.length() < fixedLength) {
-                StringBuilder sb = new StringBuilder(binary);
-                while(sb.length() < fixedLength) {
-                    sb.insert(0, '0');
-                }
-                binaryList[i] = sb.toString();
-            }
-            result[i] = applyResolution(resolution, binaryList[i]);
-        }
-
-        return result;
-    }
-
-    /**
-     * Function to generate binary number with resolution applied
-     *
-     * @param resolution Resolution of generate Morton code
-     * @param binary Input binary number
-     * @return Binary number with resolution applied
-     */
-    private static String applyResolution(int resolution, String binary) {
-        String result = binary;
-
-        if(binary.length() < resolution) {
-            StringBuilder sb = new StringBuilder(binary);
-            while(sb.length() < resolution) {
-                sb.insert(0, '0');
-            }
-            result = sb.toString();
-        }
-        else if(binary.length() > resolution) {
-            result = binary.substring(0, resolution);
-        }
-
-        return result;
-    }
-
-    /**
      * Searching a greatest common ancestor from given Morton code list
      *
      * @param pdCodes List of DGGS Morton code for point cloud

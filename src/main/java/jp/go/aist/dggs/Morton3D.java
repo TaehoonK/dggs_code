@@ -186,9 +186,9 @@ public class Morton3D {
      * @param resolution Resolution of generate Morton code
      * @return Morton code based on DGGS for point cloud data except rhombuses index
      */
-    public static String encode(long x, long y, long z, int resolution) {
+    private static String encode(long x, long y, long z, int resolution) {
         long mCode = 0;
-        String pdCode = "";
+        StringBuilder pdCode = new StringBuilder();
 
         for(int i = 4; i > 0; --i) {
             StringBuilder sb = new StringBuilder();
@@ -212,26 +212,26 @@ public class Morton3D {
                     }
                     sb.append(partialPDCode);
                 }
-                pdCode += sb.toString();
+                pdCode.append(sb.toString());
             }
             else {  // mCode is 0
-                pdCode += "00000000";
+                pdCode.append("00000000");
             }
 
             if(pdCode.length() > resolution)
                 break;
         }
 
-        pdCode = pdCode.length() > resolution ? pdCode.substring(0, resolution) : pdCode;
+        pdCode = new StringBuilder(pdCode.length() > resolution ? pdCode.substring(0, resolution) : pdCode.toString());
 
-        if (pdCode.equals("")) { // TODO ?? what is the purpose of this code?
+        if (pdCode.toString().equals("")) { // TODO ?? what is the purpose of this code?
             if (resolution != 0) {
-                pdCode = Long.toString(mCode);
+                pdCode = new StringBuilder(Long.toString(mCode));
                 System.out.println("Impossible!!");
             }
         }
 
-        return pdCode;
+        return pdCode.toString();
     }
 
     /**
@@ -241,9 +241,13 @@ public class Morton3D {
      * @return	3-dimension coordinate within an rhombus, array[x,y,z]
      */
     public static long[] decode(String pdCode) {
+        return decode(pdCode, MAX_RESOLUTION);
+    }
+
+    public static long[] decode(String pdCode, int resolution) {
         long[] coordinates = new long[3];
 
-        int extraSize = MAX_RESOLUTION - pdCode.length();
+        int extraSize = resolution - pdCode.length();
         StringBuilder sb = new StringBuilder(pdCode);
         for (int i = 0; i < extraSize; i++) {
             sb.append('0');
@@ -253,8 +257,8 @@ public class Morton3D {
         final int LOOP_COUNT = pdCode.length() / UNIT_SIZE;
         for (int i = 0; i < LOOP_COUNT; ++i) {
             int index = PDCodeTableDecode512.get(pdCode.substring(
-                            (LOOP_COUNT - (i + 1)) * UNIT_SIZE,
-                            (LOOP_COUNT - i) * UNIT_SIZE));
+                    (LOOP_COUNT - (i + 1)) * UNIT_SIZE,
+                    (LOOP_COUNT - i) * UNIT_SIZE));
             coordinates[0] |= MortonTable512Decode[index] << (UNIT_SIZE * i);
             coordinates[1] |= MortonTable512Decode[index >> 1] << (UNIT_SIZE * i);
             coordinates[2] |= MortonTable512Decode[index >> 2] << (UNIT_SIZE * i);
