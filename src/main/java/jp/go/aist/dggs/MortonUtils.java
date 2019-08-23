@@ -4,18 +4,26 @@ import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.locationtech.jts.geom.Coordinate;
 
+import java.util.Objects;
+
 import static jp.go.aist.dggs.DGGS.*;
 
 /**
+ * Handling PD code (one of type of Morton code) for 3-dimensional coordinates (WGS 84 3D, EPSG 4979)
+ * reference: Sirdeshmukh, Neeraj, et al. "Utilizing a discrete global grid system for handling point clouds with varying locations, times, and levels of detail."
+ *            Cartographica: The International Journal for Geographic Information and Geovisualization 54.1 (2019): 4-15.
+ *
  * @author TaehoonKim AIST DPRT, Research Assistant
  */
 
 public class MortonUtils {
     /**
-     * Searching a greatest common ancestor from given Morton code list
+     * Searching a greatest common ancestor from given PD code list
+     * PD code is one of type of Morton code, especially DGGS Morton for the point cloud
+     * DGGS is discrete global grid system
      *
-     * @param pdCodes List of DGGS Morton code for point cloud
-     * @return A greatest common ancestor Morton code
+     * @param pdCodes List of PD code
+     * @return A greatest common ancestor of PD codes
      */
     public static String getGreatestCommonAncestor(String[] pdCodes) {
         String result = null;
@@ -52,23 +60,24 @@ public class MortonUtils {
     }
 
     /**
-     * @param latitude
-     * @param longitude
-     * @param height
-     * @param resolution
-     * @return
+     * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding from 3-dimensional coordinates (WGS 84 3D, EPSG 4979)
+     *
+     * @param latitude latitude from WGS84 (UoM: degree)
+     * @param longitude longitude from WGS84 (UoM: degree)
+     * @param height ellipsoidal height (UoM: meter)
+     * @param resolution Resolution of generate PD code
+     * @return PD code (Point cloud DGGS code, DGGS Morton for point cloud)
      */
     public static String convertToMorton(double latitude, double longitude, double height, int resolution) {
-        double DEG2RAD = M_PI / 180.0d;
         ISEA_Geo point = new ISEA_Geo(longitude * DEG2RAD, latitude * DEG2RAD);
         // # out contains coordinates from center of triangle
         Pair<ISEA_Point, Integer> pair = ISEA_Snyder_Forward(point);
-        ISEA_Point triangleCenter = pair.getKey();
+        ISEA_Point triangleCenter = Objects.requireNonNull(pair).getKey();
         Integer face = pair.getValue();
 
         // # Find new coordinates of point from lower left/upper left origin
-        double newPointX = 0.0d;
-        double newPointY = 0.0d;
+        double newPointX;
+        double newPointY;
         if ((face >= 1 && face <= 5) || (face >= 11 && face <= 15)) {
             newPointX = triangleCenter.getX() - NEW_ORIG_X;
             newPointY = triangleCenter.getY() - NEW_ORIG_Y;
@@ -110,21 +119,21 @@ public class MortonUtils {
             face = 9;
         }
 
-        String pdCode = Morton3D.encode(intX, intY, intZ, face, resolution);
-
-        return pdCode;
+        return Morton3D.encode(intX, intY, intZ, face, resolution);
     }
 
     /**
-     * @param mortonCode
-     * @param resolution
-     * @return
+     * PD code (Point cloud DGGS code, DGGS Morton for point cloud) decoding to 3-dimensional coordinates (WGS 84 3D, EPSG 4979)
+     *
+     * @param pdCode Point cloud DGGS code, DGGS Morton for point cloud, except rhombus face number
+     * @param resolution Target resolution of PD code
+     * @return 3-dimensional coordinate (WGS 84 3D, EPSG 4979), form as Coordinate[x=latitude,y=longitude,z=height]
      */
-    public static Coordinate convertFromMorton(String mortonCode, int resolution) {
+    public static Coordinate convertFromMorton(String pdCode, int resolution) {
         // # Get face number and Morton code
         // # First number indicates rhombus face!
-        int face = Integer.parseInt(mortonCode.substring(0, 1));
-        String morton = mortonCode.substring(1);
+        int face = Integer.parseInt(pdCode.substring(0, 1));
+        String morton = pdCode.substring(1);
 
         // # Compute the X, Y, and Z values on rhombus
         long[] coordinateOnRhombus = Morton3D.decode(morton, resolution);
@@ -133,11 +142,13 @@ public class MortonUtils {
     }
 
     /**
-     * @param mortonCode
-     * @return
+     * PD code (Point cloud DGGS code, DGGS Morton for point cloud) decoding to 3-dimensional coordinates (WGS 84 3D, EPSG 4979)
+     * Target resolution is MAX_RESOLUTION (=32)
+     * @param pdCode Point cloud DGGS code, DGGS Morton for point cloud, except rhombus face number
+     * @return 3-dimensional coordinate (WGS 84 3D, EPSG 4979), form as Coordinate[x=latitude,y=longitude,z=height]
      */
-    public static Coordinate convertFromMorton(String mortonCode) {
-        return convertFromMorton(mortonCode, MAX_XY_RESOLUTION);
+    public static Coordinate convertFromMorton(String pdCode) {
+        return convertFromMorton(pdCode, MAX_XY_RESOLUTION);
     }
 
     private static Coordinate convertMortonToLatLong3D(
@@ -157,13 +168,10 @@ public class MortonUtils {
         double[] b = {scaledX, scaledY};
         // MatrixUtils.createColumnRealMatrix -- a columnData x 1 FieldMatrix
         RealMatrix rmb = MatrixUtils.createColumnRealMatrix(b);
-        // MatrixUtils.createRowRealMatrix -- a 1 x rowData.length RealMatrix -- TODO
-        RealMatrix rmx = rmai.multiply(rmb); // TODO
-
-        // x[0] -- TODO
+        // MatrixUtils.createRowRealMatrix -- a 1 x rowData.length RealMatrix
+        RealMatrix rmx = rmai.multiply(rmb);
         double xCoord = rmx.getData()[0][0];
-        // x[1] -- TODO
-        double yCoord = rmx.getData()[1][0]; // TODO : [0][1]
+        double yCoord = rmx.getData()[1][0];
 
         // # Get triangle face from rhombus face based on values of y.
         // # If y is negative, triangles will be downward oriented
@@ -215,8 +223,8 @@ public class MortonUtils {
 
         // # Translate coordinates to center (origin) of icosahedron triangle,
         // # taking into account triangle orientation
-        double xOrigin = 0.0d;
-        double yOrigin = 0.0d;
+        double xOrigin;
+        double yOrigin;
 
         if ((face >= 1 && face <= 5) || (face >= 11 && face <= 15)) {
             xOrigin = ((-NEW_ORIG_X) - xCoord) * (-1);
@@ -301,7 +309,6 @@ public class MortonUtils {
         double lat2 = vdPair.getKey();
         double lon2 = vdPair.getValue();
 
-        Coordinate point = new Coordinate(lat2, lon2, height);
-        return point;
+        return new Coordinate(lat2, lon2, height);
     }
 }

@@ -2,20 +2,22 @@ package jp.go.aist.dggs;
 
 import static jp.go.aist.dggs.DGGS.*;
 /**
- *
+ * Handling PD code (one of type of Morton code) for 3-dimensional DGGS (Discrete Global Grid Systems) cell index
+ * reference: Kim, Taehoon, et al. "Efficient Encoding and Decoding Extended Geocodes for Massive Point Cloud Data."
+ *                          2019 IEEE International Conference on Big Data and Smart Computing (BigComp). IEEE, 2019.
  *
  * @author TaehoonKim AIST DPRT, Research Assistant
  */
 public class Morton3D {
     /**
-     * Morton code encoding with Lookup Table
+     * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding with Lookup Table
      *
      * @param x          range is from 0 to 4,294,967,295 (2^32 - 1)
      * @param y          range is from 0 to 4,294,967,295 (2^32 - 1)
      * @param z          range is from 0 to 16,777,215 (2^24 - 1)
      * @param face       Index of rhombuses
-     * @param resolution Resolution of generate Morton code
-     * @return Morton code based on DGGS for point cloud data
+     * @param resolution Resolution of generate PD code
+     * @return PD code
      */
     public static String encode(long x, long y, long z, int face, int resolution) {
         String pdCode = encode(x, y, z, resolution);
@@ -23,16 +25,16 @@ public class Morton3D {
     }
 
     /**
-     * Morton code encoding with Lookup Table
+     * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding with Lookup Table
      *
      * @param x          range is from 0 to 4,294,967,295 (2^32 - 1)
      * @param y          range is from 0 to 4,294,967,295 (2^32 - 1)
      * @param z          range is from 0 to 16,777,215 (2^24 - 1)
-     * @param resolution Resolution of generate Morton code
-     * @return Morton code based on DGGS for point cloud data except rhombuses index
+     * @param resolution Resolution of generate PD code
+     * @return PD code
      */
     private static String encode(long x, long y, long z, int resolution) {
-        long mCode = 0;
+        long mCode;
         StringBuilder pdCode = new StringBuilder();
 
         for (int i = 4; i > 0; --i) {
@@ -68,33 +70,26 @@ public class Morton3D {
 
         pdCode = new StringBuilder(pdCode.length() > resolution ? pdCode.substring(0, resolution) : pdCode.toString());
 
-        if (pdCode.toString().equals("")) { // TODO ?? what is the purpose of this code?
-            if (resolution != 0) {
-                pdCode = new StringBuilder(Long.toString(mCode));
-                System.out.println("Impossible!!");
-            }
-        }
-
         return pdCode.toString();
     }
 
     /**
-     * Convert Morton codes to coordinate using bit operation
+     * Convert PD code to coordinate using bit operation
      *
-     * @param pdCode Morton code based on DGGS for point cloud data except rhombuses index
-     * @return 3-dimension coordinate within an rhombus, array[x,y,z]
+     * @param pdCode Point cloud DGGS code, DGGS Morton for point cloud, except rhombus face number
+     * @return 3-dimensional coordinate within a rhombus cell, form as array[x,y,z]
      */
     public static long[] decode(String pdCode) {
         return decode(pdCode, MAX_XY_RESOLUTION);
     }
 
     /**
+     * Convert PD code to coordinate using bit operation
      *
-     *
-     * @param pdCode
-     * @param resolution
-     * @return
-     * */
+     * @param pdCode Point cloud DGGS code, DGGS Morton for point cloud, except rhombus face number
+     * @param resolution Target resolution of PD code
+     * @return 3-dimensional coordinate within a rhombus cell, form as array[x,y,z]
+     */
     public static long[] decode(String pdCode, int resolution) {
         long[] coordinates = new long[3];
 

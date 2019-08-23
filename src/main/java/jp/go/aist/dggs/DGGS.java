@@ -4,7 +4,13 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DGGS {
+
+/**
+ * static values for jp.go.aist.DGGS package
+ *
+ * @author TaehoonKim AIST DPRT, Research Assistant
+ * */
+class DGGS {
     // For Morton3D encode and decode from rhombus index
     static final long EIGHT_BIT_MASK = 0x000000FF;
     static final long NINE_BIT_MASK = 0x000001FF;
@@ -430,13 +436,12 @@ public class DGGS {
         // # center of triangle
         ISEA_Geo c = ICOS_TRIANGLE_CENTER[triangle];
         // # Azimuth from vertex to center of triangle
-        double adj = Math.atan2(
+
+        return Math.atan2(
                 Math.cos(v.getLatitude()) * Math.sin(v.getLongitude() - c.getLongitude()),
                 Math.cos(c.getLatitude()) * Math.sin(v.getLatitude())
                         - Math.sin(c.getLatitude()) * Math.cos(v.getLatitude())
                         * Math.cos(v.getLongitude() - c.getLongitude()));
-
-        return adj;
     }
 
     static Pair<Double, Double> vincentyDirect(
