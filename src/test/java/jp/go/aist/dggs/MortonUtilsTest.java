@@ -20,16 +20,27 @@ public class MortonUtilsTest {
     }
 
     @Test
-    public void getGreatestCommonAncestor() {
+    public void getCommonAncestor_Equal() {
         String[] pdCodeList = {"1023","1023"};
         Assert.assertEquals("1023", MortonUtils.getGreatestCommonAncestor(pdCodeList));
     }
 
     @Test
     public void convertToMorton() {
-        String mortonCode = MortonUtils.convertToMorton(34.6400223819d, 135.454610442d, 1.1d, 32);
-        System.out.println("Morton Code (32) : " + mortonCode);
+        String mortonCode = MortonUtils.convertToMorton(34.6400223819d, 135.454610432d, 1.1d, 32);
         assertEquals("803213125333023101316260525667721", mortonCode);
+
+        Coordinate coords = MortonUtils.convertFromMorton(mortonCode);
+        assertEquals(34.64002238, Math.round(coords.getX()*100000000)/100000000.0, 0.00000001);
+        assertEquals(135.45461043, Math.round(coords.getY()*100000000)/100000000.0, 0.00000001);
+        assertEquals(1.1, Math.round(coords.getZ()*10000)/10000.0, 0.00001);
+    }
+
+    @Test
+    public void convertToMorton2() {
+        String mortonCode = MortonUtils.convertToMorton(34.6400223819d, 135.454610432d, 1.1d, 30);
+
+        assertEquals("8032131253330231013162605256677", mortonCode);
         Coordinate coords = MortonUtils.convertFromMorton(mortonCode);
         assertEquals(34.6400224, Math.round(coords.getX()*10000000)/10000000.0, 0.00000001);
         assertEquals(135.4546104, Math.round(coords.getY()*10000000)/10000000.0, 0.00000001);
@@ -37,13 +48,13 @@ public class MortonUtilsTest {
     }
 
     @Test
-    public void convertToMorton2() {
-        String mortonCode = MortonUtils.convertToMorton(34.6400223819d, 135.454610442d, 1.1d, 30);
-        //System.out.println("Morton Code (31) : " + mortonCode);
-        //assertEquals("80321312533302310131626052566772", mortonCode);
-        Coordinate coords = MortonUtils.convertFromMorton(mortonCode);
-        assertEquals(34.6400224, Math.round(coords.getX()*10000000)/10000000.0, 0.00000001);
-        assertEquals(135.4546104, Math.round(coords.getY()*10000000)/10000000.0, 0.00000001);
-        assertEquals(1.1, Math.round(coords.getZ()*10000)/10000.0, 0.00001);
+    public void convertToMorton_resolution() {
+        String mortonCode = MortonUtils.convertToMorton(34.6400223819d, 135.454610432d, 20d, 30);
+        Coordinate coords = MortonUtils.convertFromMorton(mortonCode, 14);
+        System.out.println(coords.getX());
+        System.out.println(coords.getY());
+        System.out.println(coords.getZ());
+        assertEquals(34.64, Math.round(coords.getX()*100)/100.0, 0.001);
+        assertEquals(135.45, Math.round(coords.getY()*100)/100.0, 0.001);
     }
 }
