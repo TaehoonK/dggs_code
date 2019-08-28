@@ -7,12 +7,20 @@ PD code is one of type of Morton code, especially DGGS Morton for the point clou
 ## How to use
 - Using Maven: Put below code in your POM file
 ```xml
- <dependency>
-  	<groupId>aist.dprt</groupId>
-  	<artifactId>dggs-code</artifactId>
-  	<version>0.2.0</version>
-  	<type>pom</type>
-  </dependency>
+<repositories>
+   <repository>
+      <id>jcenter</id>
+      <url>https://jcenter.bintray.com/</url>
+   </repository>
+</repositories>
+...
+<dependencies>
+   <dependency>
+      <groupId>aist.dprt</groupId>
+      <artifactId>dggs-code</artifactId>
+      <version>0.2.0</version>
+   </dependency>
+</dependencies>
 ```
 - Other cases: Using jar file directly
     -  https://dl.bintray.com/taehoonk/dggs_code/aist/dprt/dggs-code/0.2.0/dggs-code-0.2.0.jar
