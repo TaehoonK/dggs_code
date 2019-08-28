@@ -31,8 +31,8 @@ public class MortonUtilsTest {
         assertEquals("803213125333023101316260525667721", mortonCode);
 
         Coordinate coords = MortonUtils.convertFromMorton(mortonCode);
-        assertEquals(34.64002238, Math.round(coords.getX()*100000000)/100000000.0, 0.00000001);
-        assertEquals(135.45461043, Math.round(coords.getY()*100000000)/100000000.0, 0.00000001);
+        assertEquals(34.64002238, Math.round(coords.getX()*10000000)/10000000.0, 0.0000001);
+        assertEquals(135.45461043, Math.round(coords.getY()*10000000)/10000000.0, 0.0000001);
         assertEquals(1.1, Math.round(coords.getZ()*10000)/10000.0, 0.00001);
     }
 
