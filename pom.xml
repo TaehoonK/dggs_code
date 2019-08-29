@@ -88,6 +88,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <source>8</source>
+                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                </configuration>
             </plugin>
             <!-- GPG sign -->
             <plugin>
@@ -103,6 +107,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <!-- If you get an error during maven install, skip GPG sign step
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+                -->
             </plugin>
         </plugins>
     </build>
