@@ -164,7 +164,7 @@ class DGGS {
 
     // For Morton3D encode and decode from WGS 84 coordinate (EPSG 4326 + altitude)
     static final int MAX_XY_RESOLUTION = 32;
-    static final int MAX_Z_RESOLUTION = 25;
+    static final int MAX_Z_RESOLUTION = 24;
     static final double M_PI = Math.PI;
     static final double NEW_ORIG_X = -0.6022955012659694; // # TABLE_G * (-1) #old:
     static final double NEW_ORIG_Y = -0.3477354703761901; // # TABLE_H * (-2) #old:
