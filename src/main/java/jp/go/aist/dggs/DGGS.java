@@ -10,12 +10,12 @@ import java.util.Map;
  *
  * @author TaehoonKim AIST DPRT, Research Assistant
  * */
-class DGGS {
+public class DGGS {
     // For Morton3D encode and decode from rhombus index
     static final long EIGHT_BIT_MASK = 0x000000FF;
     static final long NINE_BIT_MASK = 0x000001FF;
     static final int UNIT_SIZE = 3;
-    static final int[] MortonTable256Encode
+    public static final int[] MortonTable256Encode
             = {
             0x00000000,
             0x00000001, 0x00000008, 0x00000009, 0x00000040, 0x00000041, 0x00000048, 0x00000049, 0x00000200,
@@ -163,12 +163,12 @@ class DGGS {
     }
 
     // For Morton3D encode and decode from WGS 84 coordinate (EPSG 4326 + altitude)
-    static final int MAX_XY_RESOLUTION = 32;
+    public static final int MAX_XY_RESOLUTION = 32;
     static final int MAX_Z_RESOLUTION = 24;
     static final double M_PI = Math.PI;
     static final double NEW_ORIG_X = -0.6022955012659694; // # TABLE_G * (-1) #old:
     static final double NEW_ORIG_Y = -0.3477354703761901; // # TABLE_H * (-2) #old:
-    static final double H_RANGE = 3355.4432d; // Unit = mm
+    public static final double H_RANGE = 3355.4432d; // Unit = mm
     static final double TOTAL_RANGE = Math.pow(2, MAX_XY_RESOLUTION);
     static final double TOTAL_RANGE_Z = Math.pow(2, MAX_Z_RESOLUTION);
     static final double DEG2RAD = M_PI / 180.0d;

@@ -3,6 +3,7 @@ package jp.go.aist.dggs;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.locationtech.jts.geom.Coordinate;
+import scala.Tuple4;
 
 import java.util.Objects;
 
@@ -69,6 +70,11 @@ public class MortonUtils {
      * @return PD code (Point cloud DGGS code, DGGS Morton for point cloud)
      */
     public static String convertToMorton(double latitude, double longitude, double height, int resolution) {
+        Tuple4<Long,Long,Long,Integer> t = convertLatLong3DToMorton(latitude, longitude, height);
+        return Morton3D.encode(t._1(), t._2(), t._3(), t._4(), resolution);
+    }
+
+    public static Tuple4<Long,Long,Long,Integer> convertLatLong3DToMorton(double latitude, double longitude, double height) {
         ISEA_Geo point = new ISEA_Geo(longitude * DEG2RAD, latitude * DEG2RAD);
         // # out contains coordinates from center of triangle
         Pair<ISEA_Point, Integer> pair = ISEA_Snyder_Forward(point);
@@ -119,7 +125,7 @@ public class MortonUtils {
             face = 9;
         }
 
-        return Morton3D.encode(intX, intY, intZ, face, resolution);
+        return new Tuple4<Long,Long,Long,Integer>(intX, intY, intZ, face);
     }
 
     /**
@@ -151,7 +157,7 @@ public class MortonUtils {
         return convertFromMorton(pdCode, MAX_XY_RESOLUTION);
     }
 
-    private static Coordinate convertMortonToLatLong3D(
+    public static Coordinate convertMortonToLatLong3D(
             long x, long y, long h, int face, int resolution) {
         final double TOTAL_RANGE = Math.pow(2, resolution);
         final double TOTAL_RANGE_Z = resolution < (MAX_XY_RESOLUTION - MAX_Z_RESOLUTION) ?
