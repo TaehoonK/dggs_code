@@ -27,7 +27,7 @@ PD code is one of type of Morton code, especially DGGS Morton for the point clou
 </dependencies>
 ```
 - Other cases: Using jar file directly
-    -  https://dl.bintray.com/taehoonk/dggs_code/aist/dprt/dggs-code/0.3.0/dggs-code-0.3.1.jar
+    -  https://dl.bintray.com/taehoonk/dggs_code/aist/dprt/dggs-code/0.3.1/dggs-code-0.3.1.jar
 
 You can browse the [javadoc](https://taehoonk.github.io/dggs_code/apidocs/index.html) for more information.
 
