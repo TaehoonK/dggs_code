@@ -1,12 +1,19 @@
 package jp.go.aist.dggs;
 
+import org.giscience.utils.geogrid.generic.Trigonometric;
+import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import org.junit.Assert;
 import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class MortonUtilsTest {
+    private final double _precision = 1e-5;
+    private final double _precision_z = 1e-2;
+    private final int _iterations = 1000000;
+
     @Test
     public void getCommonAncestor() {
         String[] pdCodeList = {"12343241532167","12342451","1234512983012308"};
@@ -28,32 +35,46 @@ public class MortonUtilsTest {
     @Test
     public void convertToMorton() {
         String mortonCode = MortonUtils.convertToMorton(34.6400223819d, 135.454610432d, 1.1d, 32);
-        assertEquals("803213121733023101312224125223321", mortonCode);
+        assertEquals("803213130622000022231226217132221", mortonCode);
 
         Coordinate coords = MortonUtils.convertFromMorton(mortonCode);
-        assertEquals(34.64002238, Math.round(coords.getX()*10000000)/10000000.0, 0.0000001);
-        assertEquals(135.45461043, Math.round(coords.getY()*10000000)/10000000.0, 0.0000001);
-        assertEquals(1.1, Math.round(coords.getZ()*10000)/10000.0, 0.01);
+        assertTrue(Math.abs(34.6400223819d - coords.getX()) < this._precision);
+        assertTrue(Math.abs(135.454610432d - coords.getY()) < this._precision);
+        assertTrue(Math.abs(1.1d - coords.getZ()) < this._precision_z);
+    }
+
+
+    @Test
+    public void convertToMorton2() throws Exception {
+        GeoCoordinates c = new GeoCoordinates(2.273799d,-66.926215d);
+        String mortonCode = MortonUtils.convertToMorton(c.getLat(), c.getLon(),0d, 32);
+        Coordinate coords = MortonUtils.convertFromMorton(mortonCode);
+        System.out.println(c.toString());
+        System.out.println(coords.toString());
+        assertTrue(Math.abs(coords.getX() - c.getLat()) < this._precision);
+        assertTrue((Math.abs(coords.getY() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision);
     }
 
     @Test
-    public void convertToMorton2() {
-        String mortonCode = MortonUtils.convertToMorton(34.6400223819d, 135.454610432d, 1.1d, 30);
+    public void convertToMorton_Random() throws Exception {
+        for (int i = 0; i < this._iterations; i++) {
+            GeoCoordinates c = new GeoCoordinates(Math.random() * 180 - 90, Math.random() * 360 - 180);
+            String mortonCode = MortonUtils.convertToMorton(c.getLat(), c.getLon(), 0, DGGS.MAX_XY_RESOLUTION);
+            Coordinate coords = MortonUtils.convertFromMorton(mortonCode);
 
-        assertEquals("8032131217330231013122241252233", mortonCode);
-        Coordinate coords = MortonUtils.convertFromMorton(mortonCode);
-        assertEquals(34.6400224, Math.round(coords.getX()*10000000)/10000000.0, 0.00000001);
-        assertEquals(135.4546104, Math.round(coords.getY()*10000000)/10000000.0, 0.00000001);
-        assertEquals(1.1, Math.round(coords.getZ()*10000)/10000.0, 0.01);
+            System.out.println(c.toString());
+            System.out.println(coords.toString());
+
+            assertTrue(Math.abs(coords.getX() - c.getLat()) < this._precision);
+            assertTrue((Math.abs(coords.getY() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision);
+        }
     }
 
     @Test
     public void convertToMorton_resolution() {
         String mortonCode = MortonUtils.convertToMorton(34.6400223819d, 135.454610432d, 20d, 30);
         Coordinate coords = MortonUtils.convertFromMorton(mortonCode, 16);
-        System.out.println(coords.getX());
-        System.out.println(coords.getY());
-        System.out.println(coords.getZ());
+
         assertEquals(34.64, Math.round(coords.getX()*100)/100.0, 0.001);
         assertEquals(135.45, Math.round(coords.getY()*100)/100.0, 0.001);
         assertEquals(0, Math.round(coords.getZ()*10000)/10000.0, 0.01);

@@ -2,6 +2,9 @@ package jp.go.aist.dggs;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.giscience.utils.geogrid.geometry.FaceCoordinates;
+import org.giscience.utils.geogrid.geometry.GeoCoordinates;
+import org.giscience.utils.geogrid.projections.ISEAProjection;
 import org.locationtech.jts.geom.Coordinate;
 import scala.Tuple4;
 
@@ -70,62 +73,76 @@ public class MortonUtils {
      * @return PD code (Point cloud DGGS code, DGGS Morton for point cloud)
      */
     public static String convertToMorton(double latitude, double longitude, double height, int resolution) {
-        Tuple4<Long,Long,Long,Integer> t = convertLatLong3DToMorton(latitude, longitude, height);
+        Tuple4<Long,Long,Long,Integer> t = null;
+        try {
+            t = convertLatLong3DToMorton(latitude, longitude, height);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return Morton3D.encode(t._1(), t._2(), t._3(), t._4(), resolution);
     }
 
     public static Tuple4<Long,Long,Long,Integer> convertLatLong3DToMorton(double latitude, double longitude, double height) {
-        ISEA_Geo point = new ISEA_Geo(longitude * DEG2RAD, latitude * DEG2RAD);
-        // # out contains coordinates from center of triangle
-        Pair<ISEA_Point, Integer> pair = ISEA_Snyder_Forward(point);
-        ISEA_Point triangleCenter = Objects.requireNonNull(pair).getKey();
-        Integer face = pair.getValue();
+        ISEAProjection p = new ISEAProjection();
+        p.setOrientation(0,0);
+        GeoCoordinates point = null;
+        try {
+            point = new GeoCoordinates(latitude,longitude);
 
-        // # Find new coordinates of point from lower left/upper left origin
-        double newPointX;
-        double newPointY;
-        if ((face >= 1 && face <= 5) || (face >= 11 && face <= 15)) {
-            newPointX = triangleCenter.getX() - NEW_ORIG_X;
-            newPointY = triangleCenter.getY() - NEW_ORIG_Y;
-        } else {
-            newPointX = (triangleCenter.getX() + NEW_ORIG_X) * (-1);
-            newPointY = (triangleCenter.getY() - NEW_ORIG_Y) * (-1);
+            // # out contains coordinates from center of triangle
+            FaceCoordinates f = p.sphereToIcosahedron(point);
+            int face = f.getFace() + 1;
+
+            // # Find new coordinates of point from lower left/upper left origin
+            double newPointX;
+            double newPointY;
+            if ((face >= 1 && face <= 5) || (face >= 11 && face <= 15)) {
+                newPointX = f.getX() - NEW_ORIG_X;
+                newPointY = f.getY() - NEW_ORIG_Y;
+            } else {
+                newPointX = (f.getX() + NEW_ORIG_X) * (-1);
+                newPointY = (f.getY() + NEW_ORIG_Y);
+            }
+
+            // # Rotate the axes, round down to nearest integer since addressing begins at 0
+            // # Scale coordinates of all dimensions to match resolution of DGGS
+            double origX = ((newPointX - ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
+            double origY = ((newPointX + ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
+            double origZ = ((H_RANGE + height) / (H_RANGE * 2.0d)) * TOTAL_RANGE_Z;
+
+            long intX = Double.valueOf(origX).longValue();
+            long intY = Double.valueOf(origY).longValue();
+            long intZ = Double.valueOf(origZ).longValue();
+
+            // # Convert triangle face number to rhombus face number
+            if (face == 1 || face == 6) {
+                face = 0;
+            } else if (face == 11 || face == 16) {
+                face = 1;
+            } else if (face == 2 || face == 7) {
+                face = 2;
+            } else if (face == 12 || face == 17) {
+                face = 3;
+            } else if (face == 3 || face == 8) {
+                face = 4;
+            } else if (face == 13 || face == 18) {
+                face = 5;
+            } else if (face == 4 || face == 9) {
+                face = 6;
+            } else if (face == 14 || face == 19) {
+                face = 7;
+            } else if (face == 5 || face == 10) {
+                face = 8;
+            } else {
+                face = 9;
+            }
+
+            return new Tuple4<Long,Long,Long,Integer>(intX, intY, intZ, face);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        // # Rotate the axes, round down to nearest integer since addressing begins at 0
-        // # Scale coordinates of all dimensions to match resolution of DGGS
-        double origX = ((newPointX - ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
-        double origY = ((newPointX + ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
-        double origZ = ((H_RANGE + height) / (H_RANGE * 2.0d)) * TOTAL_RANGE_Z;
-
-        long intX = Double.valueOf(origX).longValue();
-        long intY = Double.valueOf(origY).longValue();
-        long intZ = Double.valueOf(origZ).longValue();
-
-        // # Convert triangle face number to rhombus face number
-        if (face == 1 || face == 6) {
-            face = 0;
-        } else if (face == 11 || face == 16) {
-            face = 1;
-        } else if (face == 2 || face == 7) {
-            face = 2;
-        } else if (face == 12 || face == 17) {
-            face = 3;
-        } else if (face == 3 || face == 8) {
-            face = 4;
-        } else if (face == 13 || face == 18) {
-            face = 5;
-        } else if (face == 4 || face == 9) {
-            face = 6;
-        } else if (face == 14 || face == 19) {
-            face = 7;
-        } else if (face == 5 || face == 10) {
-            face = 8;
-        } else {
-            face = 9;
-        }
-
-        return new Tuple4<Long,Long,Long,Integer>(intX, intY, intZ, face);
+        return null; // TODO
     }
 
     /**
@@ -233,88 +250,23 @@ public class MortonUtils {
         double yOrigin;
 
         if ((face >= 1 && face <= 5) || (face >= 11 && face <= 15)) {
-            xOrigin = ((-NEW_ORIG_X) - xCoord) * (-1);
-            yOrigin = ((-NEW_ORIG_Y) - yCoord) * (-1);
+            xOrigin = (-NEW_ORIG_X - xCoord) * (-1);
+            yOrigin = (-NEW_ORIG_Y - yCoord) * (-1);
         } else {
-            xOrigin = (-NEW_ORIG_X) - xCoord;
-            yOrigin = ((-NEW_ORIG_Y) + yCoord) * (-1);
+            xOrigin = -NEW_ORIG_X - xCoord;
+            yOrigin = (-NEW_ORIG_Y - yCoord) * (-1);
         }
 
-        // # Equation 17
-        double Azprime = Math.atan2(xOrigin, yOrigin);
+        try {
+            ISEAProjection p = new ISEAProjection();
+            p.setOrientation(0,0);
+            GeoCoordinates geodeticCoord = p.icosahedronToSphere(new FaceCoordinates(face - 1, xOrigin, yOrigin));
 
-        // # Equation 18
-        double rho = Math.sqrt((Math.pow(xOrigin, 2) + Math.pow(yOrigin, 2)));
-
-        // # Adjust Azprime to fall within 0 to 120 degrees
-        int Azprime_adjust_multiples = 0;
-
-        // while Azprime < 0.0:
-        while (Azprime < 0.0d) {
-            Azprime += DEG120;
-            Azprime_adjust_multiples -= 1;
-        }
-        // while (Azprime > DEG120):
-        while (Azprime > DEG120) {
-            Azprime -= DEG120;
-            Azprime_adjust_multiples += 1;
+            return new Coordinate(geodeticCoord.getLat(), geodeticCoord.getLon(), height);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        double AzprimeCopy = Azprime;
-
-        // #Equation 19
-        double AG = (Math.pow(R_PRIME, 2) * Math.pow(TAN_LOWER_G, 2)) / (2 * ((1 / (Math.tan(Azprime))) + COTTHETA));
-
-        // # Iteration, Azprime (plane) converges to Az (ellipsoid)
-        for (int i = 0; i <= 4; i++) {
-            double H = Math.acos((Math.sin(Azprime) * SIN_UPPER_G * COS_LOWER_G) - (Math.cos(Azprime) * COS_UPPER_G));
-            double FAZ = (AG - UPPER_G - H - Azprime + DEG180);
-            double FPRIMEAZ = (((Math.cos(Azprime) * SIN_UPPER_G * COS_LOWER_G) + (Math.sin(Azprime) * COS_UPPER_G))
-                    / (Math.sin(H))) - 1;
-            double DeltaAzprime = -FAZ / (FPRIMEAZ);
-            Azprime = Azprime + DeltaAzprime;
-        }
-
-        double Az = Azprime;
-
-        // # Equations 9-11, 23 to obtain z
-        double q = Math.atan((TAN_LOWER_G) / (Math.cos(Az) + (Math.sin(Az) * COTTHETA)));
-
-        // # eq 10
-        double dprime = ((R_PRIME * TAN_LOWER_G) / (Math.cos(AzprimeCopy) + (Math.sin(AzprimeCopy) * COTTHETA)));
-
-        // # eq 11
-        double f = dprime / (2.0 * R_PRIME * Math.sin(q / 2.0));
-
-        // #eq 23, obtain z
-        double z = 2 * Math.asin((rho) / (2 * R_PRIME * f));
-
-        // # Add back 120 degree adjustments to Az
-        Az += DEG120 * Azprime_adjust_multiples;
-
-        // # Adjust Az to be clockwise from north (needed for final calculation)
-        if ((face >= 1 && face <= 5) || (face >= 11 && face <= 15)) {
-            if (Az < 0) {
-                Az = (M_PI - (Az * (-1))) + M_PI;
-            }
-        } else {
-            if (Az < 0) {
-                Az = M_PI - (Az * (-1));
-            } else {
-                Az = Az + M_PI;
-            }
-        }
-
-        z = z * R;
-
-        // # triangle center
-        ISEA_Geo center = ICOS_TRIANGLE_CENTER[face];
-        Pair<Double, Double> vdPair = vincentyDirect(FLATTENING, R,
-                center.getLatitude() * RAD2DEG, center.getLongitude() * RAD2DEG, Az * RAD2DEG, z);
-
-        double lat2 = vdPair.getKey();
-        double lon2 = vdPair.getValue();
-
-        return new Coordinate(lat2, lon2, height);
+        return null; // TODO
     }
 }

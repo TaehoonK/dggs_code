@@ -140,5 +140,12 @@
             <artifactId>scala-library</artifactId>
             <version>2.12.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.giscience.utils.geogrid</groupId>
+            <artifactId>geogrid</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/geogrid-0.0.1-SNAPSHOT.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>
