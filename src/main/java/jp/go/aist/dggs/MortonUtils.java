@@ -101,13 +101,13 @@ public class MortonUtils {
                 newPointY = f.getY() - NEW_ORIG_Y;
             } else {
                 newPointX = (f.getX() + NEW_ORIG_X) * (-1);
-                newPointY = (f.getY() + NEW_ORIG_Y);
+                newPointY = (f.getY() - NEW_ORIG_Y) * (-1);
             }
 
             // # Rotate the axes, round down to nearest integer since addressing begins at 0
             // # Scale coordinates of all dimensions to match resolution of DGGS
             double origX = ((newPointX - ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
-            double origY = ((newPointX + ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
+            double origY = ((newPointX + ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_Y * (-2))) * TOTAL_RANGE;
             double origZ = ((H_RANGE + height) / (H_RANGE * 2.0d)) * TOTAL_RANGE_Z;
 
             long intX = Double.valueOf(origX).longValue();
@@ -183,7 +183,7 @@ public class MortonUtils {
         double height = TOTAL_RANGE_Z == 0 ? 0 : (h * 2 * H_RANGE) / TOTAL_RANGE_Z - H_RANGE;
         // # Scale coordinates to scale of Cartesian system
         double scaledX = (x / TOTAL_RANGE) * (NEW_ORIG_X * -2);
-        double scaledY = (y / TOTAL_RANGE) * (NEW_ORIG_X * -2);
+        double scaledY = (y / TOTAL_RANGE) * (NEW_ORIG_Y * -2);
         // # Convert coordinates from skewed system to Cartesian system (origin at left)
         double[][] a = {{1, (-1 / Math.sqrt(3))}, {1, (1 / Math.sqrt(3))}};
         RealMatrix rma = MatrixUtils.createRealMatrix(a);
@@ -250,11 +250,11 @@ public class MortonUtils {
         double yOrigin;
 
         if ((face >= 1 && face <= 5) || (face >= 11 && face <= 15)) {
-            xOrigin = (-NEW_ORIG_X - xCoord) * (-1);
-            yOrigin = (-NEW_ORIG_Y - yCoord) * (-1);
+            xOrigin = xCoord + NEW_ORIG_X;
+            yOrigin = yCoord + NEW_ORIG_Y;
         } else {
-            xOrigin = -NEW_ORIG_X - xCoord;
-            yOrigin = (-NEW_ORIG_Y - yCoord) * (-1);
+            xOrigin = (xCoord + NEW_ORIG_X) * (-1);
+            yOrigin = -yCoord + NEW_ORIG_Y;
         }
 
         try {
