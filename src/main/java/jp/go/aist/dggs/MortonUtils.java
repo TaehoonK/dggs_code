@@ -8,8 +8,6 @@ import org.giscience.utils.geogrid.projections.ISEAProjection;
 import org.locationtech.jts.geom.Coordinate;
 import scala.Tuple4;
 
-import java.util.Objects;
-
 import static jp.go.aist.dggs.DGGS.*;
 
 /**
@@ -79,13 +77,14 @@ public class MortonUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        assert t != null;
         return Morton3D.encode(t._1(), t._2(), t._3(), t._4(), resolution);
     }
 
     public static Tuple4<Long,Long,Long,Integer> convertLatLong3DToMorton(double latitude, double longitude, double height) {
         ISEAProjection p = new ISEAProjection();
         p.setOrientation(0,0);
-        GeoCoordinates point = null;
+        GeoCoordinates point;
         try {
             point = new GeoCoordinates(latitude,longitude);
 
@@ -96,20 +95,26 @@ public class MortonUtils {
             // # Find new coordinates of point from lower left/upper left origin
             double newPointX;
             double newPointY;
+
+            newPointX = f.getX() - NEW_ORIG_X;
             if ((face >= 1 && face <= 5) || (face >= 11 && face <= 15)) {
-                newPointX = f.getX() - NEW_ORIG_X;
                 newPointY = f.getY() - NEW_ORIG_Y;
+                if(newPointY < 0)
+                    System.out.println("Y is negative : " + newPointY);
             } else {
-                newPointX = (f.getX() + NEW_ORIG_X) * (-1);
-                newPointY = (f.getY() - NEW_ORIG_Y) * (-1);
+                newPointY = f.getY() + NEW_ORIG_Y;
+                if(newPointY > 0)
+                    System.out.println("Y is positive : " + newPointY);
             }
 
             // # Rotate the axes, round down to nearest integer since addressing begins at 0
             // # Scale coordinates of all dimensions to match resolution of DGGS
-            double origX = ((newPointX - ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
-            double origY = ((newPointX + ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_Y * (-2))) * TOTAL_RANGE;
+            double origX = ((newPointX + ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
+            double origY = ((newPointX - ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
             double origZ = ((H_RANGE + height) / (H_RANGE * 2.0d)) * TOTAL_RANGE_Z;
 
+            if(origX < 0 || origY < 0)
+                System.out.println("ERROR: rhombus coordinate is negative");
             long intX = Double.valueOf(origX).longValue();
             long intY = Double.valueOf(origY).longValue();
             long intZ = Double.valueOf(origZ).longValue();
@@ -137,7 +142,7 @@ public class MortonUtils {
                 face = 9;
             }
 
-            return new Tuple4<Long,Long,Long,Integer>(intX, intY, intZ, face);
+            return new Tuple4<>(intX, intY, intZ, face);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -183,9 +188,9 @@ public class MortonUtils {
         double height = TOTAL_RANGE_Z == 0 ? 0 : (h * 2 * H_RANGE) / TOTAL_RANGE_Z - H_RANGE;
         // # Scale coordinates to scale of Cartesian system
         double scaledX = (x / TOTAL_RANGE) * (NEW_ORIG_X * -2);
-        double scaledY = (y / TOTAL_RANGE) * (NEW_ORIG_Y * -2);
+        double scaledY = (y / TOTAL_RANGE) * (NEW_ORIG_X * -2);
         // # Convert coordinates from skewed system to Cartesian system (origin at left)
-        double[][] a = {{1, (-1 / Math.sqrt(3))}, {1, (1 / Math.sqrt(3))}};
+        double[][] a = {{1, (1 / Math.sqrt(3))}, {1, (-1 / Math.sqrt(3))}};
         RealMatrix rma = MatrixUtils.createRealMatrix(a);
         RealMatrix rmai = MatrixUtils.blockInverse(rma, 0);
         double[] b = {scaledX, scaledY};
@@ -249,12 +254,11 @@ public class MortonUtils {
         double xOrigin;
         double yOrigin;
 
+        xOrigin = xCoord + NEW_ORIG_X;
         if ((face >= 1 && face <= 5) || (face >= 11 && face <= 15)) {
-            xOrigin = xCoord + NEW_ORIG_X;
             yOrigin = yCoord + NEW_ORIG_Y;
         } else {
-            xOrigin = (xCoord + NEW_ORIG_X) * (-1);
-            yOrigin = -yCoord + NEW_ORIG_Y;
+            yOrigin = yCoord - NEW_ORIG_Y;
         }
 
         try {

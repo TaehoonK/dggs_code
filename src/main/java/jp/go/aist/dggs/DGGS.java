@@ -164,12 +164,11 @@ public class DGGS {
 
     // For Morton3D encode and decode from WGS 84 coordinate (EPSG 4326 + altitude)
     public static final int MAX_XY_RESOLUTION = 32;
-    static final int MAX_Z_RESOLUTION = 24;
-    static final double M_PI = Math.PI;
-    static final double NEW_ORIG_X = -0.6022955012659694; // # TABLE_G * (-1) #old:
-    static final double NEW_ORIG_Y = -0.3477354703761901; // # TABLE_H * (-2) #old:
+    public static final int MAX_Z_RESOLUTION = 24;
     public static final double H_RANGE = 16000.0; // Unit = Meter
-    static final double TOTAL_RANGE = Math.pow(2, MAX_XY_RESOLUTION);
-    static final double TOTAL_RANGE_Z = Math.pow(2, MAX_Z_RESOLUTION);
+    public static final double TOTAL_RANGE = Math.pow(2, MAX_XY_RESOLUTION);
+    public static final double TOTAL_RANGE_Z = Math.pow(2, MAX_Z_RESOLUTION);
+    static final double NEW_ORIG_X = -0.6022955010474083;//-0.6022955012659694; // # TABLE_G * (-1) #old:
+    static final double NEW_ORIG_Y = -0.3477354707379958;//-0.3477354703761901; // # TABLE_H * (-2) #old:
 
 }
