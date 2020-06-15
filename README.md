@@ -23,12 +23,12 @@ It is introduced from "Utilizing a discrete global grid system for handling poin
    <dependency>
       <groupId>aist.dprt</groupId>
       <artifactId>dggs-code</artifactId>
-      <version>0.4.0</version>
+      <version>0.4.2</version>
    </dependency>
 </dependencies>
 ```
 - Other cases: Using jar file directly
-    -  https://dl.bintray.com/taehoonk/dggs_code/aist/dprt/dggs-code/0.4.0/dggs-code-0.4.0.jar
+    -  https://dl.bintray.com/taehoonk/dggs_code/aist/dprt/dggs-code/0.4.2/dggs-code-0.4.2.jar
 
 You can browse the [javadoc](https://taehoonk.github.io/dggs_code/apidocs/index.html) for more information.
 

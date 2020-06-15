@@ -95,16 +95,11 @@ public class MortonUtils {
             // # Find new coordinates of point from lower left/upper left origin
             double newPointX;
             double newPointY;
-
             newPointX = f.getX() - NEW_ORIG_X;
             if ((face >= 1 && face <= 5) || (face >= 11 && face <= 15)) {
                 newPointY = f.getY() - NEW_ORIG_Y;
-                if(newPointY < 0)
-                    System.out.println("Y is negative : " + newPointY);
             } else {
                 newPointY = f.getY() + NEW_ORIG_Y;
-                if(newPointY > 0)
-                    System.out.println("Y is positive : " + newPointY);
             }
 
             // # Rotate the axes, round down to nearest integer since addressing begins at 0
@@ -112,9 +107,9 @@ public class MortonUtils {
             double origX = ((newPointX + ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
             double origY = ((newPointX - ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
             double origZ = ((H_RANGE + height) / (H_RANGE * 2.0d)) * TOTAL_RANGE_Z;
+            if(origX < 0 || origY < 0 || origX > TOTAL_RANGE || origY > TOTAL_RANGE)
+                throw new IllegalArgumentException("new Point X (or Y) is not on the rhombus");
 
-            if(origX < 0 || origY < 0)
-                System.out.println("ERROR: rhombus coordinate is negative");
             long intX = Double.valueOf(origX).longValue();
             long intY = Double.valueOf(origY).longValue();
             long intZ = Double.valueOf(origZ).longValue();
