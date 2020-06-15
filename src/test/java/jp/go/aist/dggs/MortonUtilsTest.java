@@ -167,4 +167,15 @@ public class MortonUtilsTest {
         assertEquals(135.45, Math.round(coords.getY()*100)/100.0, 0.001);
         assertEquals(0, Math.round(coords.getZ()*10000)/10000.0, 0.01);
     }
+
+    @Test
+    public void convertToMorton_resolution2() {
+        String mortonCode = MortonUtils.convertToMorton(51.335624458573875d, 171.32047771529926d, 9986.692580252009d, 30);
+        Coordinate coords = MortonUtils.convertFromMorton(mortonCode, 25);
+        System.out.println(coords.toString());
+        coords = MortonUtils.convertFromMorton(mortonCode, 25);
+        System.out.println(coords.toString());
+        coords = MortonUtils.convertFromMorton(mortonCode, 20);
+        System.out.println(coords.toString());
+    }
 }
