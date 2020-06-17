@@ -33,8 +33,9 @@
 
     <distributionManagement>
         <repository>
-            <id>dggs-code</id>
-            <url>https://api.bintray.com/maven/taehoonk/dggs_code/dggs-code/;publish=1</url>
+            <id>github</id>
+            <name>GitHub Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/TaehoonK/dggs_code</url>
         </repository>
     </distributionManagement>
 
