@@ -15,22 +15,23 @@ From the 0.5.0 version, this project includes the [Geogrid project](https://gith
 - Using Maven: Put below code in your POM file
 ```xml
 <repositories>
-   <repository>
-      <id>jcenter</id>
-      <url>https://jcenter.bintray.com/</url>
-   </repository>
+    <repository>
+        <id>github</id>
+        <name>GitHub OWNER Apache Maven Packages</name>
+        <url>https://maven.pkg.github.com/TaehoonK/dggs_code</url>
+    </repository>
 </repositories>
 ...
 <dependencies>
-   <dependency>
-      <groupId>aist.dprt</groupId>
-      <artifactId>dggs-code</artifactId>
-      <version>0.5.0</version>
-   </dependency>
+    <dependency>
+        <groupId>aist.dprt</groupId>
+        <artifactId>dggs-code</artifactId>
+        <version>0.5.0</version>
+    </dependency>
 </dependencies>
 ```
 - Other cases: Using jar file directly
-    -  https://dl.bintray.com/taehoonk/dggs_code/aist/dprt/dggs-code/0.5.0/dggs-code-0.5.0.jar
+    -  https://github.com/TaehoonK/dggs_code/packages/273033
 
 You can browse the [javadoc](https://taehoonk.github.io/dggs_code/apidocs/index.html) for more information.
 
