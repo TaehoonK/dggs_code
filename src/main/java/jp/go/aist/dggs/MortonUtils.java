@@ -108,7 +108,7 @@ public class MortonUtils {
             double origY = ((newPointX - ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
             double origZ = ((H_RANGE + height) / (H_RANGE * 2.0d)) * TOTAL_RANGE_Z;
             if(origX < 0 || origY < 0 || origX > TOTAL_RANGE || origY > TOTAL_RANGE)
-                throw new IllegalArgumentException("new Point X (or Y) is not on the rhombus");
+                throw new IllegalArgumentException("new Point X (or Y) is not on the rhombus: X = " + origX + " || Y = " + origY );
 
             long intX = Double.valueOf(origX).longValue();
             long intY = Double.valueOf(origY).longValue();
