@@ -154,7 +154,7 @@ public class MortonUtilsTest {
 
     @Test
     public void convertToMorton_resolution() throws Exception {
-        GeoCoordinates c = new GeoCoordinates(34.6400223819d, 135.454610432d);
+        GeoCoordinates c = new GeoCoordinates(Math.random() * 179.99 - 89.995, Math.random() * 360.0 - 180.0);
         String mortonCode = MortonUtils.convertToMorton(c.getLat(), c.getLon(), 0d, DGGS.MAX_XY_RESOLUTION);
         Coordinate coords = MortonUtils.convertFromMorton(mortonCode, DGGS.MAX_XY_RESOLUTION);
         assertTrue(Math.abs(coords.getX() - c.getLat()) < this._precision);
@@ -171,16 +171,5 @@ public class MortonUtilsTest {
         coords = MortonUtils.convertFromMorton(mortonCode, 15);
         assertTrue(Math.abs(coords.getX() - c.getLat()) < this._precision * 20000);
         assertTrue((Math.abs(coords.getY() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision * 20000);
-    }
-
-    @Test
-    public void convertToMorton_resolution2() {
-        String mortonCode = MortonUtils.convertToMorton(51.335624458573875d, 171.32047771529926d, 9986.692580252009d, 30);
-        Coordinate coords = MortonUtils.convertFromMorton(mortonCode, 25);
-        System.out.println(coords.toString());
-        coords = MortonUtils.convertFromMorton(mortonCode, 25);
-        System.out.println(coords.toString());
-        coords = MortonUtils.convertFromMorton(mortonCode, 20);
-        System.out.println(coords.toString());
     }
 }
