@@ -26,6 +26,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
       run: |
-        mkdir ~/.m2
+        mkdir -p ~/.m2
         echo "<settings><servers><server><id>github</id><username>TaehoonK</username><password>${GITHUB_TOKEN}</password></server></servers></settings>" > ~/.m2/settings.xml
         mvn deploy
