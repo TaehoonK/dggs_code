@@ -31,7 +31,7 @@ From the 0.5.0 version, this project includes the [Geogrid project](https://gith
     <dependency>
         <groupId>aist.dprt</groupId>
         <artifactId>dggs-code</artifactId>
-        <version>0.5.1</version>
+        <version>{tag.version}</version>
     </dependency>
 </dependencies>
 ```
