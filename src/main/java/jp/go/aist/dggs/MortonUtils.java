@@ -1,5 +1,6 @@
 package jp.go.aist.dggs;
 
+import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.giscience.utils.geogrid.geometry.FaceCoordinates;
@@ -71,17 +72,13 @@ public class MortonUtils {
      * @return PD code (Point cloud DGGS code, DGGS Morton for point cloud)
      */
     public static String convertToMorton(double latitude, double longitude, double height, int resolution) {
-        Tuple4<Long,Long,Long,Integer> t = null;
-        try {
-            t = convertLatLong3DToMorton(latitude, longitude, height);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        assert t != null;
-        return Morton3D.encode(t._1(), t._2(), t._3(), t._4(), resolution);
+        ISEA4DFaceCoordinates faceCoordinates = convertLatLong3DToMorton(latitude, longitude, height);
+
+        assert faceCoordinates != null;
+        return Morton3D.encode(faceCoordinates.getX(), faceCoordinates.getY(), faceCoordinates.getZ(), faceCoordinates.getFace(), resolution);
     }
 
-    public static Tuple4<Long,Long,Long,Integer> convertLatLong3DToMorton(double latitude, double longitude, double height) {
+    public static ISEA4DFaceCoordinates convertLatLong3DToMorton(double latitude, double longitude, double height) {
         ISEAProjection p = new ISEAProjection();
         p.setOrientation(0,0);
         GeoCoordinates point;
@@ -107,8 +104,8 @@ public class MortonUtils {
             double origX = ((newPointX + ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
             double origY = ((newPointX - ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
             double origZ = ((H_RANGE + height) / (H_RANGE * 2.0d)) * TOTAL_RANGE_Z;
-            if(origX < 0 || origY < 0 || origX > TOTAL_RANGE || origY > TOTAL_RANGE)
-                throw new IllegalArgumentException("new Point X (or Y) is not on the rhombus: X = " + origX + " || Y = " + origY );
+            if(origX < 0 || origY < 0 || origZ < 0 || origX > TOTAL_RANGE || origY > TOTAL_RANGE || origZ > TOTAL_RANGE_Z)
+                throw new IllegalArgumentException("new Point X (or Y) is not on the rhombus: X = " + origX + " || Y = " + origY  + " || Z = " + origZ);
 
             long intX = Double.valueOf(origX).longValue();
             long intY = Double.valueOf(origY).longValue();
@@ -137,7 +134,7 @@ public class MortonUtils {
                 face = 9;
             }
 
-            return new Tuple4<>(intX, intY, intZ, face);
+            return new ISEA4DFaceCoordinates(face, intX, intY, intZ);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -150,40 +147,36 @@ public class MortonUtils {
      *
      * @param pdCode Point cloud DGGS code, DGGS Morton for point cloud, except rhombus face number
      * @param resolution Target resolution of PD code
-     * @return 3-dimensional coordinate (WGS 84 3D, EPSG 4979), form as Coordinate[x=latitude,y=longitude,z=height]
+     * @return 3-dimensional coordinate (WGS 84 3D, EPSG 4979), form as GeoCoordinates(latitude, longitude, height)
      */
-    public static Coordinate convertFromMorton(String pdCode, int resolution) {
-        // # Get face number and Morton code
-        // # First number indicates rhombus face!
-        int face = Integer.parseInt(pdCode.substring(0, 1));
-        String morton = pdCode.substring(1);
+    public static GeoCoordinates convertFromMorton(String pdCode, int resolution) {
+        // # Compute the X, Y, and Z values on rhombus and face index
+        ISEA4DFaceCoordinates coordinateOnRhombus = Morton3D.decode(pdCode, resolution);
 
-        // # Compute the X, Y, and Z values on rhombus
-        long[] coordinateOnRhombus = Morton3D.decode(morton, resolution);
-
-        return convertMortonToLatLong3D(coordinateOnRhombus[0], coordinateOnRhombus[1], coordinateOnRhombus[2], face, resolution);
+        return convertMortonToLatLong3D(coordinateOnRhombus);
     }
 
     /**
      * PD code (Point cloud DGGS code, DGGS Morton for point cloud) decoding to 3-dimensional coordinates (WGS 84 3D, EPSG 4979)
      * Target resolution is MAX_RESOLUTION (=32)
      * @param pdCode Point cloud DGGS code, DGGS Morton for point cloud, except rhombus face number
-     * @return 3-dimensional coordinate (WGS 84 3D, EPSG 4979), form as Coordinate[x=latitude,y=longitude,z=height]
+     * @return 3-dimensional coordinate (WGS 84 3D, EPSG 4979), form as GeoCoordinates(latitude, longitude, height)
      */
-    public static Coordinate convertFromMorton(String pdCode) {
+    public static GeoCoordinates convertFromMorton(String pdCode) {
         return convertFromMorton(pdCode, MAX_XY_RESOLUTION);
     }
 
-    public static Coordinate convertMortonToLatLong3D(
-            long x, long y, long h, int face, int resolution) {
-        final double TOTAL_RANGE = Math.pow(2, resolution);
-        final double TOTAL_RANGE_Z = resolution < (MAX_XY_RESOLUTION - MAX_Z_RESOLUTION) ?
-                0 : Math.pow(2, (resolution - (MAX_XY_RESOLUTION - MAX_Z_RESOLUTION)));
+    public static GeoCoordinates convertMortonToLatLong3D(ISEA4DFaceCoordinates faceCoordinates) {
+        double x = faceCoordinates.getX();
+        double y = faceCoordinates.getY();
+        double z = faceCoordinates.getZ();
+        int face = faceCoordinates.getFace();
+
         // # Convert h/Z to height above/below ellipsoid
-        double height = TOTAL_RANGE_Z == 0 ? 0 : (h * 2 * H_RANGE) / TOTAL_RANGE_Z - H_RANGE;
+        double height = faceCoordinates.getMaxZ() == 0 ? 0 : (z * 2.0d * H_RANGE) / faceCoordinates.getMaxZ() - H_RANGE;
         // # Scale coordinates to scale of Cartesian system
-        double scaledX = (x / TOTAL_RANGE) * (NEW_ORIG_X * -2);
-        double scaledY = (y / TOTAL_RANGE) * (NEW_ORIG_X * -2);
+        double scaledX = (x / faceCoordinates.getMaxX()) * (NEW_ORIG_X * -2);
+        double scaledY = (y / faceCoordinates.getMaxY()) * (NEW_ORIG_X * -2);
         // # Convert coordinates from skewed system to Cartesian system (origin at left)
         double[][] a = {{1, (1 / Math.sqrt(3))}, {1, (-1 / Math.sqrt(3))}};
         RealMatrix rma = MatrixUtils.createRealMatrix(a);
@@ -261,11 +254,31 @@ public class MortonUtils {
             p.setOrientation(0,0);
             GeoCoordinates geodeticCoord = p.icosahedronToSphere(new FaceCoordinates(face - 1, xOrigin, yOrigin));
 
-            return new Coordinate(geodeticCoord.getLat(), geodeticCoord.getLon(), height);
+            return new GeoCoordinates(geodeticCoord.getLat(), geodeticCoord.getLon(), height);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return null; // TODO
+    }
+
+    public static GeoCoordinates convertMortonToLatLong3D(ISEA4DFaceCoordinates faceCoordinates, int resolution) {
+        final double TOTAL_RANGE_Z_BY_RES = (resolution < (DGGS.MAX_XY_RESOLUTION - DGGS.MAX_Z_RESOLUTION) ? 0 : Math.pow(2, resolution - (DGGS.MAX_XY_RESOLUTION - DGGS.MAX_Z_RESOLUTION)));
+        long x = faceCoordinates.getX();
+        long y = faceCoordinates.getY();
+        long z = faceCoordinates.getZ();
+        if(faceCoordinates.getResolution() != resolution) {
+            if(faceCoordinates.getResolution() > resolution) {
+                x = (long) (faceCoordinates.getX() / faceCoordinates.getMaxX() * Math.pow(2, resolution));
+                y = (long) (faceCoordinates.getY() / faceCoordinates.getMaxY() * Math.pow(2, resolution));
+                z = (long) (faceCoordinates.getZ() / faceCoordinates.getMaxZ() * TOTAL_RANGE_Z_BY_RES);
+            }
+            else {
+                // TODO
+            }
+        }
+        int face = faceCoordinates.getFace();
+
+        return convertMortonToLatLong3D(new ISEA4DFaceCoordinates(face, x, y, z, resolution));
     }
 }
