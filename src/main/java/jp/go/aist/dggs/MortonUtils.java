@@ -6,8 +6,6 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.giscience.utils.geogrid.geometry.FaceCoordinates;
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import org.giscience.utils.geogrid.projections.ISEAProjection;
-import org.locationtech.jts.geom.Coordinate;
-import scala.Tuple4;
 
 import static jp.go.aist.dggs.DGGS.*;
 

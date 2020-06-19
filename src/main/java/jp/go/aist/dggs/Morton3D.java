@@ -1,7 +1,6 @@
 package jp.go.aist.dggs;
 
 import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
-import org.giscience.utils.geogrid.geometry.FaceCoordinates;
 
 import static jp.go.aist.dggs.DGGS.*;
 /**
