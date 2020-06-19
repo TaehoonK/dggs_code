@@ -43,6 +43,40 @@ public class MortonUtilsTest {
         assertTrue(Math.abs(1.1d - coords.getHeight()) < this._precision_z);
     }
 
+    @Test
+    public void convertToMorton_Random() throws Exception {
+        for (int i = 0; i < this._iterations; i++) {
+            GeoCoordinates c = new GeoCoordinates(Math.random() * 179.99 - 89.995, Math.random() * 360.0 - 180.0, Math.random() * DGGS.H_RANGE * 2 - DGGS.H_RANGE);
+            String mortonCode = MortonUtils.convertToMorton(c.getLat(), c.getLon(), c.getHeight(), DGGS.MAX_XY_RESOLUTION);
+            GeoCoordinates coords = MortonUtils.convertFromMorton(mortonCode);
+
+            assertTrue(Math.abs(coords.getLat() - c.getLat()) < this._precision);
+            assertTrue((Math.abs(coords.getLon() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision);
+            assertTrue(Math.abs(coords.getHeight() - c.getHeight()) < this._precision_z);
+        }
+    }
+
+    @Test
+    public void convertToMorton_resolution() throws Exception {
+        GeoCoordinates c = new GeoCoordinates(Math.random() * 179.99 - 89.995, Math.random() * 360.0 - 180.0, Math.random() * DGGS.H_RANGE * 2 - DGGS.H_RANGE);
+        String mortonCode = MortonUtils.convertToMorton(c.getLat(), c.getLon(), c.getHeight(), DGGS.MAX_XY_RESOLUTION);
+        GeoCoordinates coords = MortonUtils.convertFromMorton(mortonCode, DGGS.MAX_XY_RESOLUTION);
+        assertTrue(Math.abs(coords.getLat() - c.getLat()) < this._precision);
+        assertTrue((Math.abs(coords.getLon() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision);
+
+        coords = MortonUtils.convertFromMorton(mortonCode, 25);
+        assertTrue(Math.abs(coords.getLat() - c.getLat()) < this._precision * 100);
+        assertTrue((Math.abs(coords.getLon() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision * 100);
+
+        coords = MortonUtils.convertFromMorton(mortonCode, 20);
+        assertTrue(Math.abs(coords.getLat() - c.getLat()) < this._precision * 1000);
+        assertTrue((Math.abs(coords.getLon() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision * 1000);
+
+        coords = MortonUtils.convertFromMorton(mortonCode, 15);
+        assertTrue(Math.abs(coords.getLat() - c.getLat()) < this._precision * 20000);
+        assertTrue((Math.abs(coords.getLon() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision * 20000);
+    }
+
 
     public void convertToMorton_TriangleCheck() {
         double _goldenRatio = (1 + Math.sqrt(5)) / 2.;
@@ -138,46 +172,6 @@ public class MortonUtilsTest {
         System.out.println("Min_Y : " + f.getY());
     }
 
-    @Test
-    public void convertToMorton_Random() throws Exception {
-        for (int i = 0; i < this._iterations; i++) {
-            GeoCoordinates c = new GeoCoordinates(Math.random() * 179.99 - 89.995, Math.random() * 360.0 - 180.0, Math.random() * DGGS.H_RANGE * 2 - DGGS.H_RANGE);
-            String mortonCode = MortonUtils.convertToMorton(c.getLat(), c.getLon(), c.getHeight(), DGGS.MAX_XY_RESOLUTION);
-            GeoCoordinates coords = MortonUtils.convertFromMorton(mortonCode);
-
-            assertTrue(Math.abs(coords.getLat() - c.getLat()) < this._precision);
-            assertTrue((Math.abs(coords.getLon() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision);
-            assertTrue(Math.abs(coords.getHeight() - c.getHeight()) < this._precision_z);
-        }
-    }
-
-    @Test
-    public void convertToMorton_resolution() throws Exception {
-        GeoCoordinates c = new GeoCoordinates(Math.random() * 179.99 - 89.995, Math.random() * 360.0 - 180.0, Math.random() * DGGS.H_RANGE * 2 - DGGS.H_RANGE);
-        String mortonCode = MortonUtils.convertToMorton(c.getLat(), c.getLon(), c.getHeight(), DGGS.MAX_XY_RESOLUTION);
-        GeoCoordinates coords = MortonUtils.convertFromMorton(mortonCode, DGGS.MAX_XY_RESOLUTION);
-        assertTrue(Math.abs(coords.getLat() - c.getLat()) < this._precision);
-        assertTrue((Math.abs(coords.getLon() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision);
-        System.out.println(c.toString());
-        System.out.println(coords.toString());
-
-        coords = MortonUtils.convertFromMorton(mortonCode, 25);
-        assertTrue(Math.abs(coords.getLat() - c.getLat()) < this._precision * 100);
-        assertTrue((Math.abs(coords.getLon() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision * 100);
-        System.out.println(coords.toString());
-
-        coords = MortonUtils.convertFromMorton(mortonCode, 20);
-        assertTrue(Math.abs(coords.getLat() - c.getLat()) < this._precision * 1000);
-        assertTrue((Math.abs(coords.getLon() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision * 1000);
-        System.out.println(coords.toString());
-
-        coords = MortonUtils.convertFromMorton(mortonCode, 15);
-        assertTrue(Math.abs(coords.getLat() - c.getLat()) < this._precision * 20000);
-        assertTrue((Math.abs(coords.getLon() - c.getLon()) % 180) * Trigonometric.cos(c.getLat()) < this._precision * 20000);
-        System.out.println(coords.toString());
-    }
-
-    @Test
     public void convertMortonToLatLong3D() {
         for (int resolution = 0; resolution <= 32; resolution++) {
             double latitude = 35d;
