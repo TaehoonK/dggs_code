@@ -1,5 +1,5 @@
 ![Java CI with Maven](https://github.com/TaehoonK/dggs_code/workflows/Java%20CI%20with%20Maven/badge.svg) 
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg)
 ![Tag version](https://img.shields.io/github/v/tag/TaehoonK/dggs_code)
 
 

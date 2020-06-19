@@ -1,6 +1,5 @@
 package jp.go.aist.dggs;
 
-import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
