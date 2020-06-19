@@ -1,5 +1,8 @@
 package jp.go.aist.dggs;
 
+import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
+import org.giscience.utils.geogrid.geometry.FaceCoordinates;
+
 import static jp.go.aist.dggs.DGGS.*;
 /**
  * Handling PD code (one of type of Morton code) for 3-dimensional DGGS (Discrete Global Grid Systems) cell index
@@ -79,7 +82,7 @@ public class Morton3D {
      * @param pdCode Point cloud DGGS code, DGGS Morton for point cloud, except rhombus face number
      * @return 3-dimensional coordinate within a rhombus cell, form as array[x,y,z]
      */
-    public static long[] decode(String pdCode) {
+    public static ISEA4DFaceCoordinates decode(String pdCode) {
         return decode(pdCode, MAX_XY_RESOLUTION);
     }
 
@@ -90,24 +93,26 @@ public class Morton3D {
      * @param resolution Target resolution of PD code
      * @return 3-dimensional coordinate within a rhombus cell, form as array[x,y,z]
      */
-    public static long[] decode(String pdCode, int resolution) {
-        long[] coordinates = new long[3];
+    public static ISEA4DFaceCoordinates decode(String pdCode, int resolution) {
+        int face = Integer.parseInt(pdCode.substring(0, 1));
+        String morton = pdCode.substring(1);
 
-        int extraSize = resolution - pdCode.length();
-        StringBuilder sb = new StringBuilder(pdCode);
+        int extraSize = resolution - morton.length();
+        StringBuilder sb = new StringBuilder(morton);
         if(extraSize > 0) {
             for (int i = 0; i < extraSize; i++) {
                 sb.append('0');
             }
-            pdCode = sb.toString();
+            morton = sb.toString();
         }
         else {
-            pdCode = sb.substring(0, resolution);
+            morton = sb.substring(0, resolution);
         }
 
-        final int LOOP_COUNT = pdCode.length() / UNIT_SIZE;
+        long[] coordinates = new long[3];
+        final int LOOP_COUNT = morton.length() / UNIT_SIZE;
         for (int i = 0; i < LOOP_COUNT; ++i) {
-            int index = PDCodeTable512Decode.get(pdCode.substring(
+            int index = PDCodeTable512Decode.get(morton.substring(
                     (LOOP_COUNT - (i + 1)) * UNIT_SIZE,
                     (LOOP_COUNT - i) * UNIT_SIZE));
             coordinates[0] |= MortonTable512Decode[index] << (UNIT_SIZE * i);
@@ -115,9 +120,9 @@ public class Morton3D {
             coordinates[2] |= MortonTable512Decode[index >> 2] << (UNIT_SIZE * i);
         }
 
-        if (pdCode.length() % UNIT_SIZE != 0) {
-            int remainStringSize = pdCode.length() % UNIT_SIZE;
-            String remainString = pdCode.substring(pdCode.length() - remainStringSize);
+        if (morton.length() % UNIT_SIZE != 0) {
+            int remainStringSize = morton.length() % UNIT_SIZE;
+            String remainString = morton.substring(morton.length() - remainStringSize);
             sb = new StringBuilder(remainString);
             for (int i = 0; i < UNIT_SIZE - remainStringSize; i++) {
                 sb.insert(0, '0');
@@ -129,6 +134,6 @@ public class Morton3D {
             coordinates[2] = coordinates[2] << remainStringSize | MortonTable512Decode[index >> 2];
         }
 
-        return coordinates;
+        return new ISEA4DFaceCoordinates(face, coordinates[0], coordinates[1], coordinates[2], resolution);
     }
 }
