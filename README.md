@@ -20,11 +20,12 @@ From the 0.5.0 version, this project includes the [Geogrid project](https://gith
 - Using Maven: Put below code in your POM file
 ```xml
 <repositories>
-    <repository>
-        <id>github</id>
-        <name>GitHub OWNER Apache Maven Packages</name>
-        <url>https://maven.pkg.github.com/TaehoonK/dggs_code</url>
-    </repository>
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+    </repositories>
 </repositories>
 ...
 <dependencies>
