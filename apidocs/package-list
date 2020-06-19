@@ -1,1 +1,6 @@
 jp.go.aist.dggs
+jp.go.aist.dggs.geometry
+org.giscience.utils.geogrid.generic
+org.giscience.utils.geogrid.geo
+org.giscience.utils.geogrid.geometry
+org.giscience.utils.geogrid.projections

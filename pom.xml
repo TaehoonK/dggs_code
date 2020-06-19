@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>aist.dprt</groupId>
     <artifactId>dggs-code</artifactId>
-    <version>0.2.0</version>
+    <version>0.6.2</version>
     <packaging>jar</packaging>
 
     <name>DGGS Morton Code</name>
@@ -33,7 +33,7 @@
 
     <distributionManagement>
         <repository>
-            <id>dggs-code</id>
+            <id>bintray</id>
             <url>https://api.bintray.com/maven/taehoonk/dggs_code/dggs-code/;publish=1</url>
         </repository>
     </distributionManagement>
@@ -59,12 +59,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.1.2</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>2.3</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -78,28 +78,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- GPG sign -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -113,12 +98,6 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.locationtech.jts/jts-core -->
-        <dependency>
-            <groupId>org.locationtech.jts</groupId>
-            <artifactId>jts-core</artifactId>
-            <version>1.16.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
         <dependency>
