@@ -171,7 +171,7 @@ public class MortonUtils {
         int face = faceCoordinates.getFace();
 
         // # Convert h/Z to height above/below ellipsoid
-        double height = faceCoordinates.getMaxZ() == 0 ? 0 : (z * 2.0d * H_RANGE) / faceCoordinates.getMaxZ() - H_RANGE;
+        double height = faceCoordinates.getMaxZ() <= 1 ? 0 : (z * 2.0d * H_RANGE) / faceCoordinates.getMaxZ() - H_RANGE;
         // # Scale coordinates to scale of Cartesian system
         double scaledX = (x / faceCoordinates.getMaxX()) * (NEW_ORIG_X * -2);
         double scaledY = (y / faceCoordinates.getMaxY()) * (NEW_ORIG_X * -2);
