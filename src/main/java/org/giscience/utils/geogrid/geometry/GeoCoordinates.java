@@ -12,18 +12,27 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
     private final Double _lon;
     private final Double _height;
 
-    public GeoCoordinates(Double lat, Double lon, Double _height) throws Exception {
-        if (lat < -90 || lat > 90) throw new Exception("invalid latitude");
-        lon %= 360;
-        if (lon > 180) lon -= 360;
-        else if (lon < -180) lon += 360;
-        this._lat = lat;
-        this._lon = lon;
-        this._height = _height;
+    /**
+     * @param latitude latitude from WGS84 (UoM: degree)
+     * @param longitude longitude from WGS84 (UoM: degree)
+     * @param height ellipsoidal height (UoM: meter)
+     */
+    public GeoCoordinates(Double latitude, Double longitude, Double height) throws Exception {
+        if (latitude < -90 || latitude > 90) throw new Exception("invalid latitude");
+        longitude %= 360;
+        if (longitude > 180) longitude -= 360;
+        else if (longitude < -180) longitude += 360;
+        this._lat = latitude;
+        this._lon = longitude;
+        this._height = height;
     }
 
-    public GeoCoordinates(Double lat, Double lon) throws Exception {
-        this(lat, lon, 0d);
+    /**
+     * @param latitude latitude from WGS84 (UoM: degree)
+     * @param longitude longitude from WGS84 (UoM: degree)
+     */
+    public GeoCoordinates(Double latitude, Double longitude) throws Exception {
+        this(latitude, longitude, 0d);
     }
 
     public Double getLat() {
@@ -45,9 +54,9 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
     @Override
     public String toString() {
         if(this._height != null)
-            return String.format("lat %f lon %f height %f", this._lat, this._lon, this._height);
+            return String.format("latitude %f longitude %f height %f", this._lat, this._lon, this._height);
         else
-            return String.format("lat %f lon %f", this._lat, this._lon);
+            return String.format("latitude %f longitude %f", this._lat, this._lon);
     }
 
     @Override

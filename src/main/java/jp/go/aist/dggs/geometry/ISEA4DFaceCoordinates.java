@@ -2,6 +2,12 @@ package jp.go.aist.dggs.geometry;
 
 import jp.go.aist.dggs.DGGS;
 
+/**
+ * Cartesian Coordinates of a location on a face of a platonic solid.
+ * This class targeted ISEA4D projection.
+ *
+ * @author Taehoon Kim
+ */
 public class ISEA4DFaceCoordinates {
     private final int _res;
     private final int _face;
@@ -9,6 +15,13 @@ public class ISEA4DFaceCoordinates {
     private final long _y;
     private final long _z;
 
+    /**
+     * @param face       Index of rhombuses
+     * @param x          range is from 0 to 4,294,967,295 (2^32 - 1)
+     * @param y          range is from 0 to 4,294,967,295 (2^32 - 1)
+     * @param z          range is from 0 to 16,777,215 (2^24 - 1)
+     * @param resolution Resolution of generate PD code
+     */
     public ISEA4DFaceCoordinates(int face, long x, long y, long z, int resolution) {
         this._face = face;
         this._x = x;
@@ -17,6 +30,12 @@ public class ISEA4DFaceCoordinates {
         this._res = resolution;
     }
 
+    /**
+     * @param face       Index of rhombuses
+     * @param x          range is from 0 to 4,294,967,295 (2^32 - 1)
+     * @param y          range is from 0 to 4,294,967,295 (2^32 - 1)
+     * @param z          range is from 0 to 16,777,215 (2^24 - 1)
+     */
     public ISEA4DFaceCoordinates(int face, long x, long y, long z) {
         this(face, x, y, z, DGGS.MAX_XY_RESOLUTION);
     }

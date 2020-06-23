@@ -14,30 +14,26 @@ public class Morton3D {
     /**
      * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding with Lookup Table
      *
-     * @param x          range is from 0 to 4,294,967,295 (2^32 - 1)
-     * @param y          range is from 0 to 4,294,967,295 (2^32 - 1)
-     * @param z          range is from 0 to 16,777,215 (2^24 - 1)
-     * @param face       Index of rhombuses
-     * @param resolution Resolution of generate PD code
+     * @param faceCoordinates   DGGS coordinate on rhombuses (= diamond)
      * @return PD code
      */
-    public static String encode(long x, long y, long z, int face, int resolution) {
-        String pdCode = encode(x, y, z, resolution);
-        return face + pdCode;
+    public static String encode(ISEA4DFaceCoordinates faceCoordinates) {
+        return encode(faceCoordinates, faceCoordinates.getResolution());
     }
 
     /**
      * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding with Lookup Table
      *
-     * @param x          range is from 0 to 4,294,967,295 (2^32 - 1)
-     * @param y          range is from 0 to 4,294,967,295 (2^32 - 1)
-     * @param z          range is from 0 to 16,777,215 (2^24 - 1)
-     * @param resolution Resolution of generate PD code
+     * @param faceCoordinates   DGGS coordinate on rhombuses (= diamond)
+     * @param resolution        Target resolution of PD code
      * @return PD code
      */
-    private static String encode(long x, long y, long z, int resolution) {
+    public static String encode(ISEA4DFaceCoordinates faceCoordinates, int resolution) {
+        long x = faceCoordinates.getX();
+        long y = faceCoordinates.getY();
+        long z = faceCoordinates.getZ();
         long mCode;
-        StringBuilder pdCode = new StringBuilder();
+        StringBuilder pdCode = new StringBuilder(String.valueOf(faceCoordinates.getFace()));
 
         for (int i = 4; i > 0; --i) {
             StringBuilder sb = new StringBuilder();
@@ -66,11 +62,11 @@ public class Morton3D {
                 pdCode.append("00000000");
             }
 
-            if (pdCode.length() > resolution)
+            if (pdCode.length() > resolution + 1)
                 break;
         }
 
-        pdCode = new StringBuilder(pdCode.length() > resolution ? pdCode.substring(0, resolution) : pdCode.toString());
+        pdCode = new StringBuilder(pdCode.length() > resolution + 1 ? pdCode.substring(0, resolution + 1) : pdCode.toString());
 
         return pdCode.toString();
     }
@@ -78,8 +74,8 @@ public class Morton3D {
     /**
      * Convert PD code to coordinate using bit operation
      *
-     * @param pdCode Point cloud DGGS code, DGGS Morton for point cloud, except rhombus face number
-     * @return 3-dimensional coordinate within a rhombus cell, form as array[x,y,z]
+     * @param pdCode    Point cloud DGGS code, DGGS Morton for point cloud
+     * @return 3-dimensional coordinate within a rhombus cell with resolution
      */
     public static ISEA4DFaceCoordinates decode(String pdCode) {
         return decode(pdCode, MAX_XY_RESOLUTION);
@@ -88,9 +84,9 @@ public class Morton3D {
     /**
      * Convert PD code to coordinate using bit operation
      *
-     * @param pdCode Point cloud DGGS code, DGGS Morton for point cloud, except rhombus face number
-     * @param resolution Target resolution of PD code
-     * @return 3-dimensional coordinate within a rhombus cell, form as array[x,y,z]
+     * @param pdCode        Point cloud DGGS code, DGGS Morton for point cloud
+     * @param resolution    Target resolution of PD code
+     * @return 3-dimensional coordinate within a rhombus cell with resolution
      */
     public static ISEA4DFaceCoordinates decode(String pdCode, int resolution) {
         int face = Integer.parseInt(pdCode.substring(0, 1));
