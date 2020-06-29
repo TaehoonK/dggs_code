@@ -94,9 +94,11 @@ public class MortonUtils {
 
             // # Rotate the axes, round down to nearest integer since addressing begins at 0
             // # Scale coordinates of all dimensions to match resolution of DGGS
-            double origX = ((newPointX + ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
-            double origY = ((newPointX - ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
-            double origZ = ((H_RANGE + geoCoordinates.getHeight()) / (H_RANGE * 2.0d)) * TOTAL_RANGE_Z;
+            double origX = ((newPointX - ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
+            double origY = ((newPointX + ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
+            double origZ = 0;
+            if(geoCoordinates.getHeight() != null)
+                origZ = ((H_RANGE + geoCoordinates.getHeight()) / (H_RANGE * 2.0d)) * TOTAL_RANGE_Z;
             if(origX < 0 || origY < 0 || origZ < 0 || origX > TOTAL_RANGE || origY > TOTAL_RANGE || origZ > TOTAL_RANGE_Z)
                 throw new IllegalArgumentException("new Point X (or Y) is not on the rhombus: X = " + origX + " || Y = " + origY  + " || Z = " + origZ);
 
@@ -170,15 +172,9 @@ public class MortonUtils {
         // # Scale coordinates to scale of Cartesian system
         double scaledX = (x / faceCoordinates.getMaxX()) * (NEW_ORIG_X * -2);
         double scaledY = (y / faceCoordinates.getMaxY()) * (NEW_ORIG_X * -2);
-        // # Convert coordinates from skewed system to Cartesian system (origin at left)
-        double[][] a = {{1, (1 / Math.sqrt(3))}, {1, (-1 / Math.sqrt(3))}};
-        RealMatrix rma = MatrixUtils.createRealMatrix(a);
-        RealMatrix rmai = MatrixUtils.blockInverse(rma, 0);
         double[] b = {scaledX, scaledY};
-        // MatrixUtils.createColumnRealMatrix -- a columnData x 1 FieldMatrix
-        RealMatrix rmb = MatrixUtils.createColumnRealMatrix(b);
-        // MatrixUtils.createRowRealMatrix -- a 1 x rowData.length RealMatrix
-        RealMatrix rmx = rmai.multiply(rmb);
+        RealMatrix rmb = MatrixUtils.createColumnRealMatrix(b); // MatrixUtils.createColumnRealMatrix -- a columnData x 1 FieldMatrix
+        RealMatrix rmx = MATRIX_A_INVERSE.multiply(rmb); // MatrixUtils.createRowRealMatrix -- a 1 x rowData.length RealMatrix
         double xCoord = rmx.getData()[0][0];
         double yCoord = rmx.getData()[1][0];
 

@@ -32,7 +32,7 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
      * @param longitude longitude from WGS84 (UoM: degree)
      */
     public GeoCoordinates(Double latitude, Double longitude) throws Exception {
-        this(latitude, longitude, 0d);
+        this(latitude, longitude, null);
     }
 
     public Double getLat() {
@@ -47,8 +47,12 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
         return this._height;
     }
 
-    public Double distanceTo2D(GeoCoordinates other) {
-        return Trigonometric.acos(Trigonometric.sin(this.getLat()) * Trigonometric.sin(other.getLat()) + Trigonometric.cos(this.getLat()) * Trigonometric.cos(other.getLat()) * Trigonometric.cos(this.getLon() - other.getLon()));
+    public Double distanceTo2D(GeoCoordinates another) {
+        return Trigonometric.acos(Trigonometric.sin(this.getLat())
+                * Trigonometric.sin(another.getLat())
+                + Trigonometric.cos(this.getLat())
+                * Trigonometric.cos(another.getLat())
+                * Trigonometric.cos(this.getLon() - another.getLon()));
     }
 
     @Override

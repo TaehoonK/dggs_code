@@ -1,5 +1,8 @@
 package jp.go.aist.dggs;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -167,7 +170,10 @@ public class DGGS {
     public static final double H_RANGE = 16000.0; // Unit = Meter
     public static final double TOTAL_RANGE = Math.pow(2, MAX_XY_RESOLUTION);
     public static final double TOTAL_RANGE_Z = Math.pow(2, MAX_Z_RESOLUTION);
-    static final double NEW_ORIG_X = -0.6022955010474083;//-0.6022955012659694; // # TABLE_G * (-1) #old:
-    static final double NEW_ORIG_Y = -0.3477354707379958;//-0.3477354703761901; // # TABLE_H * (-2) #old:
-
+    static final double NEW_ORIG_X = -0.6022955010474083;
+    static final double NEW_ORIG_Y = -0.3477354707379958;
+    // # Convert coordinates from skewed system to Cartesian system (origin at left)
+    static final double[][] A = {{1, (-1 / Math.sqrt(3))}, {1, (1 / Math.sqrt(3))}};
+    static final RealMatrix MATRIX_A = MatrixUtils.createRealMatrix(A);
+    public static final RealMatrix MATRIX_A_INVERSE = MatrixUtils.blockInverse(MATRIX_A, 0);
 }

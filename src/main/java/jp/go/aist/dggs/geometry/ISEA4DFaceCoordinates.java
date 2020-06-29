@@ -1,6 +1,10 @@
 package jp.go.aist.dggs.geometry;
 
 import jp.go.aist.dggs.DGGS;
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
+
+import static jp.go.aist.dggs.DGGS.MATRIX_A_INVERSE;
 
 /**
  * Cartesian Coordinates of a location on a face of a platonic solid.
@@ -60,17 +64,21 @@ public class ISEA4DFaceCoordinates {
         return this._z;
     }
 
-    public double getMaxX() {
-        return Math.pow(2,_res);
+    public long getMaxX() {
+        return (long) Math.pow(2,_res);
     }
 
-    public double getMaxY() {
-        return Math.pow(2,_res);
+    public long getMaxY() {
+        return (long) Math.pow(2,_res);
     }
 
-    public double getMaxZ() {
+    public long getMaxZ() {
         return _res < (DGGS.MAX_XY_RESOLUTION - DGGS.MAX_Z_RESOLUTION) ?
-                0 : Math.pow(2, (_res - (DGGS.MAX_XY_RESOLUTION - DGGS.MAX_Z_RESOLUTION)));
+                0 : Double.valueOf(Math.pow(2, (_res - (DGGS.MAX_XY_RESOLUTION - DGGS.MAX_Z_RESOLUTION)))).longValue();
+    }
+
+    public double distance2DTo(ISEA4DFaceCoordinates c) {
+        return Math.sqrt(Math.pow(this._x - c.getX(), 2) + Math.pow(this._y - c.getY(), 2));
     }
 
     public Double distance3DTo(ISEA4DFaceCoordinates c) {
@@ -79,5 +87,16 @@ public class ISEA4DFaceCoordinates {
     @Override
     public String toString() {
         return String.format("res %d face %d x %d y %d z %d", this._res, this._face, this._x, this._y, this._z);
+    }
+
+    public ISEA4DFaceCoordinates toOrthogonal() {
+        double[] b = {this._x, this._y};
+        RealMatrix matrix_B = MatrixUtils.createColumnRealMatrix(b);
+        RealMatrix rmx = MATRIX_A_INVERSE.multiply(matrix_B);
+
+        return new ISEA4DFaceCoordinates(_face,
+                Double.valueOf(rmx.getData()[0][0]).longValue(),
+                Double.valueOf(rmx.getData()[1][0]).longValue(),
+                _z, _res);
     }
 }
