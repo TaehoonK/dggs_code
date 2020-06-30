@@ -1,15 +1,14 @@
 package jp.go.aist.dggs;
 
 import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
+import jp.go.aist.dggs.utils.MortonUtils;
 import org.giscience.utils.geogrid.geometry.FaceCoordinates;
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import org.giscience.utils.geogrid.projections.ISEAProjection;
 import org.junit.Test;
 import org.locationtech.proj4j.*;
-
 import java.util.Objects;
 
-import static org.junit.Assert.assertTrue;
 
 public class ISEA4DFaceCoordinatesTest {
 

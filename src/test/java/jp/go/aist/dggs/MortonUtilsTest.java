@@ -1,6 +1,8 @@
 package jp.go.aist.dggs;
 
+import jp.go.aist.dggs.common.DGGS;
 import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
+import jp.go.aist.dggs.utils.MortonUtils;
 import org.giscience.utils.geogrid.generic.Trigonometric;
 import org.giscience.utils.geogrid.geometry.FaceCoordinates;
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;

@@ -150,14 +150,14 @@ public class ISEAProjection {
     /**
      * Sets the orientation of the icosahedron.
      *
-     * One corner of the icosahedron is, by default, facing to the north pole, and one to the south pole. The provided
-     * orientation is relative to the default orientation.
+     * One corner of the icosahedron is, by default, facing to the north pole, and one to the south pole.
+     * The provided orientation is relative to the default orientation.
      *
-     * The orientation shifts every location by the angle <code>orientationLon</code> in direction of positive
-     * longitude, and thereafter by the angle <code>orientationLat</code> in direction of positive latitude.
+     * The orientation shifts every location by the angle <code>orientationLon</code> in direction of positive longitude,
+     * and thereafter by the angle <code>orientationLat</code> in direction of positive latitude.
      *
-     * @param orientationLat
-     * @param orientationLon
+     * @param orientationLat in direction of positive longitude
+     * @param orientationLon in direction of positive latitude
      */
     public void setOrientation(double orientationLat, double orientationLon) {
         this._orientationLat = orientationLat;
@@ -172,15 +172,7 @@ public class ISEAProjection {
         this.setOrientation((this.__E + this.__F) / 2., -11.25);
     }
 
-    /**
-     * Only for internal use!
-     * Changes the orientation of geocoordinates, that is, rotates the coordinate system
-     *
-     * @param c
-     * @return
-     * @throws Exception
-     */
-    public GeoCoordinates _changeOrientation(GeoCoordinates c) throws Exception {
+    private GeoCoordinates _changeOrientation(GeoCoordinates c) throws IllegalArgumentException {
         if (this._orientationLat == 0 && this._orientationLon == 0) return c;
         double sinOrientationLat = Trigonometric.sin(this._orientationLat);
         double cosOrientationLat = Trigonometric.cos(this._orientationLat);
@@ -194,15 +186,7 @@ public class ISEAProjection {
         return new GeoCoordinates(lat2, lon2);
     }
 
-    /**
-     * Only for internal use!
-     * Inverse of _changeOrientation
-     *
-     * @param c
-     * @return
-     * @throws Exception
-     */
-    public GeoCoordinates _revertOrientation(GeoCoordinates c) throws Exception {
+    private GeoCoordinates _revertOrientation(GeoCoordinates c) {
         if (this._orientationLat == 0 && this._orientationLon == 0) return (c.getLat() < -90 + ISEAProjection._precisionPerDefinition || c.getLat() > 90 - ISEAProjection._precisionPerDefinition) ? new GeoCoordinates(c.getLat(), 0.) : c;
         double lon = c.getLon();
         if (c.getLat() < -90 + ISEAProjection._precisionPerDefinition || c.getLat() > 90 - ISEAProjection._precisionPerDefinition) lon = 0;
@@ -259,9 +243,8 @@ public class ISEAProjection {
      *
      * @param c geographic coordinates
      * @return coordinates on the icosahedron
-     * @throws Exception
      */
-    public FaceCoordinates sphereToIcosahedron(GeoCoordinates c) throws Exception {
+    public FaceCoordinates sphereToIcosahedron(GeoCoordinates c) {
         return this._sphereToIcosahedron(this._changeOrientation(c));
     }
 
@@ -270,9 +253,8 @@ public class ISEAProjection {
      *
      * @param c coordinates on the icosahedron
      * @return geographic coordinates
-     * @throws Exception
      */
-    public GeoCoordinates icosahedronToSphere(FaceCoordinates c) throws Exception {
+    public GeoCoordinates icosahedronToSphere(FaceCoordinates c) {
         return this._revertOrientation(this._icosahedronToSphere(c));
     }
 
@@ -393,7 +375,7 @@ public class ISEAProjection {
         return result;
     }
 
-    private GeoCoordinates _icosahedronToSphere(FaceCoordinates c) throws Exception {
+    private GeoCoordinates _icosahedronToSphere(FaceCoordinates c) {
         double Az = Trigonometric.atan2(c.getX(), c.getY()); // Az'
         double rho = Math.sqrt(Math.pow(c.getX(), 2) + Math.pow(c.getY(), 2)); // \rho
         double AzAdjustment = (this.faceOrientation(c) > 0) ? 0 : 180;
@@ -437,7 +419,7 @@ public class ISEAProjection {
     /**
      * Returns orientation of a face.
      *
-     * @param fc
+     * @param fc face index
      * @return 1 for upright, and -1 for upside down
      */
     public int faceOrientation(FaceCoordinates fc) {
@@ -447,7 +429,7 @@ public class ISEAProjection {
     /**
      * Returns orientation of a face.
      *
-     * @param face
+     * @param face face index
      * @return 1 for upright, and -1 for upside down
      */
     public int faceOrientation(int face) {
@@ -466,7 +448,6 @@ public class ISEAProjection {
     private double _compute_q(double sinAz_earth, double cosAz_earth) {
         return Trigonometric.atan2(this._tan_g, (cosAz_earth + sinAz_earth * this._cotTheta)); // q
     }
-
     private double _getLat(FaceCoordinates c) {
         return this.getLat(c.getFace());
     }
@@ -475,20 +456,20 @@ public class ISEAProjection {
     }
 
     /**
-     * Returns latitude for face
+     * Returns latitude for center of face
      *
-     * @param face
-     * @return latitude
+     * @param face face index
+     * @return latitude for center of face
      */
     public double getLat(int face) {
         return this.__lats[face];
     }
 
     /**
-     * Returns longitude for face
+     * Returns longitude for center of face
      *
-     * @param face
-     * @return longitude
+     * @param face face index
+     * @return longitude for center of face
      */
     public double getLon(int face) {
         return this.__lons[face];

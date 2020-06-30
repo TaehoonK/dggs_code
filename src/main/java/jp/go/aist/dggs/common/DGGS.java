@@ -1,11 +1,9 @@
-package jp.go.aist.dggs;
+package jp.go.aist.dggs.common;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
-
 import java.util.HashMap;
 import java.util.Map;
-
 
 /**
  * static values for jp.go.aist.DGGS package
@@ -14,9 +12,9 @@ import java.util.Map;
  * */
 public class DGGS {
     // For Morton3D encode and decode from rhombus index
-    static final long EIGHT_BIT_MASK = 0x000000FF;
-    static final long NINE_BIT_MASK = 0x000001FF;
-    static final int UNIT_SIZE = 3;
+    public static final long EIGHT_BIT_MASK = 0x000000FF;
+    public static final long NINE_BIT_MASK  = 0x000001FF;
+    public static final int UNIT_SIZE = 3;
     public static final int[] MortonTable256Encode
             = {
             0x00000000,
@@ -54,7 +52,7 @@ public class DGGS {
             0x00249201, 0x00249208, 0x00249209, 0x00249240, 0x00249241, 0x00249248, 0x00249249
     };
 
-    static final long[] MortonTable512Decode = {
+    public static final long[] MortonTable512Decode = {
             0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 3,
             0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 3,
             0, 1, 0, 1, 0, 1, 0, 1, 2, 3, 2, 3, 2, 3, 2, 3,
@@ -89,7 +87,7 @@ public class DGGS {
             4, 5, 4, 5, 4, 5, 4, 5, 6, 7, 6, 7, 6, 7, 6, 7
     };
 
-    static final String[] PDCodeTable512Encode = {
+    public static final String[] PDCodeTable512Encode = {
             "000", "001", "002", "003", "004", "005", "006", "007",
             "010", "011", "012", "013", "014", "015", "016", "017",
             "020", "021", "022", "023", "024", "025", "026", "027",
@@ -156,7 +154,7 @@ public class DGGS {
             "770", "771", "772", "773", "774", "775", "776", "777",
     };
 
-    static final Map<String, Integer> PDCodeTable512Decode;
+    public static final Map<String, Integer> PDCodeTable512Decode;
     static {
         PDCodeTable512Decode = new HashMap<>();
         for (int i = 0; i < 512; i++) {
@@ -165,15 +163,15 @@ public class DGGS {
     }
 
     // For Morton3D encode and decode from WGS 84 coordinate (EPSG 4326 + altitude)
-    public static final int MAX_XY_RESOLUTION = 32;
-    public static final int MAX_Z_RESOLUTION = 24;
-    public static final double H_RANGE = 16000.0; // Unit = Meter
-    public static final double TOTAL_RANGE = Math.pow(2, MAX_XY_RESOLUTION);
-    public static final double TOTAL_RANGE_Z = Math.pow(2, MAX_Z_RESOLUTION);
-    static final double NEW_ORIG_X = -0.6022955010474083;
-    static final double NEW_ORIG_Y = -0.3477354707379958;
+    public static final int MAX_XY_RESOLUTION   = 32;
+    public static final int MAX_Z_RESOLUTION    = 24;
+    public static final double H_RANGE          = 16000.0; // Unit = Meter
+    public static final double TOTAL_RANGE      = Math.pow(2, MAX_XY_RESOLUTION);
+    public static final double TOTAL_RANGE_Z    = Math.pow(2, MAX_Z_RESOLUTION);
+    public static final double NEW_ORIG_X       = -0.6022955010474083;
+    public static final double NEW_ORIG_Y       = -0.3477354707379958;
     // # Convert coordinates from skewed system to Cartesian system (origin at left)
-    static final double[][] A = {{1, (-1 / Math.sqrt(3))}, {1, (1 / Math.sqrt(3))}};
-    static final RealMatrix MATRIX_A = MatrixUtils.createRealMatrix(A);
+    static final double[][] A           = {{1, (-1 / Math.sqrt(3))}, {1, (1 / Math.sqrt(3))}};
+    static final RealMatrix MATRIX_A    = MatrixUtils.createRealMatrix(A);
     public static final RealMatrix MATRIX_A_INVERSE = MatrixUtils.blockInverse(MATRIX_A, 0);
 }
