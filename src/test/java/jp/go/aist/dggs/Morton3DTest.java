@@ -1,6 +1,7 @@
 package jp.go.aist.dggs;
 
 import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
+import jp.go.aist.dggs.geometry.Morton3D;
 import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;

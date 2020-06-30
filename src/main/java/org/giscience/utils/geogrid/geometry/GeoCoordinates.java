@@ -1,6 +1,6 @@
 package org.giscience.utils.geogrid.geometry;
 
-import org.giscience.utils.geogrid.generic.Trigonometric;
+import org.locationtech.spatial4j.distance.DistanceUtils;
 
 /**
  * Geographic coordinates of a location on Earth.
@@ -13,12 +13,12 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
     private final Double _height;
 
     /**
-     * @param latitude latitude from WGS84 (UoM: degree)
+     * @param latitude  latitude from WGS84 (UoM: degree)
      * @param longitude longitude from WGS84 (UoM: degree)
-     * @param height ellipsoidal height (UoM: meter)
+     * @param height    ellipsoidal height (UoM: meter)
      */
-    public GeoCoordinates(Double latitude, Double longitude, Double height) throws Exception {
-        if (latitude < -90 || latitude > 90) throw new Exception("invalid latitude");
+    public GeoCoordinates(Double latitude, Double longitude, Double height) throws IllegalArgumentException {
+        if (latitude < -90 || latitude > 90) throw new IllegalArgumentException("invalid latitude");
         longitude %= 360;
         if (longitude > 180) longitude -= 360;
         else if (longitude < -180) longitude += 360;
@@ -28,11 +28,11 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
     }
 
     /**
-     * @param latitude latitude from WGS84 (UoM: degree)
+     * @param latitude  latitude from WGS84 (UoM: degree)
      * @param longitude longitude from WGS84 (UoM: degree)
      */
-    public GeoCoordinates(Double latitude, Double longitude) throws Exception {
-        this(latitude, longitude, 0d);
+    public GeoCoordinates(Double latitude, Double longitude) throws IllegalArgumentException {
+        this(latitude, longitude, null);
     }
 
     public Double getLat() {
@@ -47,8 +47,14 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
         return this._height;
     }
 
-    public Double distanceTo2D(GeoCoordinates other) {
-        return Trigonometric.acos(Trigonometric.sin(this.getLat()) * Trigonometric.sin(other.getLat()) + Trigonometric.cos(this.getLat()) * Trigonometric.cos(other.getLat()) * Trigonometric.cos(this.getLon() - other.getLon()));
+    /**
+     * 2-D distance calculation from this coordinate to another.
+     *
+     * @param another another coordinate
+     * @return 2-D distance
+     * */
+    public Double distanceTo2D(GeoCoordinates another) {
+        return DistanceUtils.EARTH_EQUATORIAL_RADIUS_KM * 1000 * DistanceUtils.distHaversineRAD(this.getLat(), this.getLon(), another.getLat(), another.getLon()); // in meter.
     }
 
     @Override
@@ -61,13 +67,13 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
 
     @Override
     public int compareTo(GeoCoordinates o) {
-        int d = 0;
-        if(this._height != null && o._height != null)
-            d = Double.compare(this._height, o._height);
-        if (d != 0) return d;
-
+        int d;
         d = Double.compare(this._lat, o._lat);
         if (d != 0) return d;
-        return Double.compare(this._lon, o._lon);
+        d = Double.compare(this._lon, o._lon);
+        if (d != 0) return d;
+        if(this._height != null && o._height != null)
+            d = Double.compare(this._height, o._height);
+        return d;
     }
 }

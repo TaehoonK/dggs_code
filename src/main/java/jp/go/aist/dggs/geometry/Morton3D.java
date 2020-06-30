@@ -1,8 +1,6 @@
-package jp.go.aist.dggs;
+package jp.go.aist.dggs.geometry;
 
-import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
-
-import static jp.go.aist.dggs.DGGS.*;
+import static jp.go.aist.dggs.common.DGGS.*;
 /**
  * Handling PD code (one of type of Morton code) for 3-dimensional DGGS (Discrete Global Grid Systems) cell index
  * reference: Kim, Taehoon, et al. "Efficient Encoding and Decoding Extended Geocodes for Massive Point Cloud Data."
@@ -12,21 +10,21 @@ import static jp.go.aist.dggs.DGGS.*;
  */
 public class Morton3D {
     /**
-     * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding with Lookup Table
+     * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding.
      *
-     * @param faceCoordinates   DGGS coordinate on rhombuses (= diamond)
-     * @return PD code
+     * @param faceCoordinates   ISEA4D face coordinate
+     * @return PD code: Point cloud DGGS code, DGGS Morton for point cloud
      */
     public static String encode(ISEA4DFaceCoordinates faceCoordinates) {
         return encode(faceCoordinates, faceCoordinates.getResolution());
     }
 
     /**
-     * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding with Lookup Table
+     * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding.
      *
-     * @param faceCoordinates   DGGS coordinate on rhombuses (= diamond)
+     * @param faceCoordinates   ISEA4D face coordinate
      * @param resolution        Target resolution of PD code
-     * @return PD code
+     * @return PD code: Point cloud DGGS code, DGGS Morton for point cloud
      */
     public static String encode(ISEA4DFaceCoordinates faceCoordinates, int resolution) {
         long x = faceCoordinates.getX();
@@ -42,7 +40,7 @@ public class Morton3D {
             mCode = mCode   // handling a 24-bits(3 dimension x 8 bits) bucket at once
                     | (MortonTable256Encode[(int) ((z >> shift) & EIGHT_BIT_MASK)] << 2)
                     | (MortonTable256Encode[(int) ((y >> shift) & EIGHT_BIT_MASK)] << 1)
-                    | MortonTable256Encode[(int) ((x >> shift) & EIGHT_BIT_MASK)];
+                    | (MortonTable256Encode[(int) ((x >> shift) & EIGHT_BIT_MASK)]);
 
             if (mCode != 0) {
                 boolean isSixBits = true;
@@ -72,21 +70,21 @@ public class Morton3D {
     }
 
     /**
-     * Convert PD code to coordinate using bit operation
+     * Convert PD code to face coordinate.
      *
      * @param pdCode    Point cloud DGGS code, DGGS Morton for point cloud
-     * @return 3-dimensional coordinate within a rhombus cell with resolution
+     * @return 3-dimensional coordinate on ISEA projection face
      */
     public static ISEA4DFaceCoordinates decode(String pdCode) {
         return decode(pdCode, MAX_XY_RESOLUTION);
     }
 
     /**
-     * Convert PD code to coordinate using bit operation
+     * Convert PD code to face coordinate.
      *
      * @param pdCode        Point cloud DGGS code, DGGS Morton for point cloud
      * @param resolution    Target resolution of PD code
-     * @return 3-dimensional coordinate within a rhombus cell with resolution
+     * @return 3-dimensional coordinate on ISEA projection face
      */
     public static ISEA4DFaceCoordinates decode(String pdCode, int resolution) {
         int face = Integer.parseInt(pdCode.substring(0, 1));
