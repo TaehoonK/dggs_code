@@ -145,7 +145,7 @@ public class Morton2D {
      * @param pdCode Target PD code for getting boundary
      * @return ISEA4DCellBoundary instance
      * */
-    public static ISEA4DCellBoundary getBoundary(String pdCode) throws CloneNotSupportedException {
+    public static ISEA4DCellBoundary getBoundary(String pdCode) {
         ISEA4DFaceCoordinates faceCoordinates = decode(pdCode);
 
         return getBoundary(faceCoordinates);
