@@ -60,7 +60,7 @@ public class MortonUtilsTest {
 
     @Test
     public void convertToMorton_resolution() throws Exception {
-        GeoCoordinates c = new GeoCoordinates(Math.random() * 179.99 - 89.995, Math.random() * 360.0 - 180.0, Math.random() * DGGS.H_RANGE * 2 - DGGS.H_RANGE);
+        GeoCoordinates c = new GeoCoordinates(Math.random() * 179.99 - 89.995, Math.random() * 360.0 - 180.0);
         String mortonCode = MortonUtils.toPDCode(c, DGGS.MAX_XY_RESOLUTION);
         GeoCoordinates coords = MortonUtils.toGeoCoordinate(mortonCode, DGGS.MAX_XY_RESOLUTION);
         assertTrue(Math.abs(coords.getLat() - c.getLat()) < this._precision);

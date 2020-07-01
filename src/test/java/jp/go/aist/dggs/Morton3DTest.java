@@ -10,6 +10,7 @@ import static org.junit.Assert.assertEquals;
  * @author TaehoonKim AIST DPRT, Research Assistant
  * */
 public class Morton3DTest {
+    private final int _iterations = 1000000;
 
     @Test
     public void encode() {
@@ -53,7 +54,7 @@ public class Morton3DTest {
 
     @Test
     public void encode_decode() {
-        for(int i = 0; i < 100000; i++) {
+        for(int i = 0; i < _iterations; i++) {
             long x = (long) (Math.random() * 4294967295L);
             long y = (long) (Math.random() * 4294967295L);
             long z = (long) (Math.random() * 16777215L);

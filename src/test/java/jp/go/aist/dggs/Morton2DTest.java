@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
  * @author TaehoonKim AIST DPRT, Research Assistant
  * */
 public class Morton2DTest {
+    private final int _iterations = 1000000;
 
     @Test
     public void encode() {
@@ -38,7 +39,7 @@ public class Morton2DTest {
 
     @Test
     public void encode_decode() {
-        for(int i = 0; i < 100000; i++) {
+        for(int i = 0; i < _iterations; i++) {
             long x = (long) (Math.random() * 4294967295L);
             long y = (long) (Math.random() * 4294967295L);
             String pdCode = Morton2D.encode(new ISEA4DFaceCoordinates(1,x,y,32));
