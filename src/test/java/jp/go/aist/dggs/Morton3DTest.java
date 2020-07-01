@@ -50,4 +50,18 @@ public class Morton3DTest {
         assertEquals(2097151L, result4.getZ());
         assertEquals(code.length() - 1, result4.getResolution());
     }
+
+    @Test
+    public void encode_decode() {
+        for(int i = 0; i < 100000; i++) {
+            long x = (long) (Math.random() * 4294967295L);
+            long y = (long) (Math.random() * 4294967295L);
+            long z = (long) (Math.random() * 16777215L);
+            String pdCode = Morton3D.encode(new ISEA4DFaceCoordinates(1,x,y,z,32));
+            ISEA4DFaceCoordinates result = Morton3D.decode(pdCode);
+            assertEquals(x, result.getX());
+            assertEquals(y, result.getY());
+            assertEquals(z, result.getZ());
+        }
+    }
 }

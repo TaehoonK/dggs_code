@@ -1,14 +1,9 @@
 package jp.go.aist.dggs.geometry;
 
 import static jp.go.aist.dggs.common.DGGS.*;
-/**
- * Handling PD code (one of type of Morton code) for 3-dimensional DGGS (Discrete Global Grid Systems) cell index
- * reference: Kim, Taehoon, et al. "Efficient Encoding and Decoding Extended Geocodes for Massive Point Cloud Data."
- *                          2019 IEEE International Conference on Big Data and Smart Computing (BigComp). IEEE, 2019.
- *
- * @author TaehoonKim AIST DPRT, Research Assistant
- */
-public class Morton3D {
+
+public class Morton2D {
+    final static int DIMENSION = 2;
     /**
      * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding.
      *
@@ -29,7 +24,7 @@ public class Morton3D {
     public static String encode(ISEA4DFaceCoordinates faceCoordinates, int resolution) {
         long x = faceCoordinates.getX();
         long y = faceCoordinates.getY();
-        long z = faceCoordinates.getZ();
+
         long mCode;
         StringBuilder pdCode = new StringBuilder(String.valueOf(faceCoordinates.getFace()));
 
@@ -37,23 +32,14 @@ public class Morton3D {
             StringBuilder sb = new StringBuilder();
             int shift = (i - 1) * 8; // A unit of bits of the bucket is 8-bits
             mCode = 0;
-            mCode = mCode   // handling a 24-bits(3 dimension x 8 bits) bucket at once
-                    | (Morton3DTable256Encode[(int) ((z >> shift) & EIGHT_BIT_MASK)] << 2)
-                    | (Morton3DTable256Encode[(int) ((y >> shift) & EIGHT_BIT_MASK)] << 1)
-                    | (Morton3DTable256Encode[(int) ((x >> shift) & EIGHT_BIT_MASK)]);
+            mCode = mCode << 16
+                    | (Morton2DTable256Encode[(int) ((y >> shift) & EIGHT_BIT_MASK)] << 1)
+                    | (Morton2DTable256Encode[(int) ((x >> shift) & EIGHT_BIT_MASK)]);
 
             if (mCode != 0) {
-                boolean isSixBits = true;
-                for (int j = 3; j > 0; --j) {
-                    shift = (j - 1) * 9; // UNIT_SIZE * DIMENSION is 9
-                    String partialPDCode = PDCode3DTable512Encode[(int) ((mCode >> shift) & NINE_BIT_MASK)];
-                    if (isSixBits) {
-                        // Bucket size is 24-bits, it can be distinguished to 6-bits, 9-bits, 9-bits.
-                        // So, the first one should be 6-bits.
-                        partialPDCode = partialPDCode.substring(1);
-                        isSixBits = false;
-                    }
-                    sb.append(partialPDCode);
+                for(int j = 2; j > 0; --j) {
+                    shift = (j - 1) * UNIT_SIZE_2D * DIMENSION;
+                    sb.append(PDCode2DTable256Encode[(int) ((mCode >> shift) & EIGHT_BIT_MASK)]);
                 }
                 pdCode.append(sb.toString());
             } else {  // mCode is 0
@@ -90,6 +76,7 @@ public class Morton3D {
         int face = Integer.parseInt(pdCode.substring(0, 1));
         String morton = pdCode.substring(1);
 
+
         int extraSize = resolution - morton.length();
         StringBuilder sb = new StringBuilder(morton);
         if(extraSize > 0) {
@@ -102,31 +89,29 @@ public class Morton3D {
             morton = sb.substring(0, resolution);
         }
 
-        long[] coordinates = new long[3];
-        final int LOOP_COUNT = morton.length() / UNIT_SIZE_3D;
+        long[] coordinates = new long[2];
+        final int LOOP_COUNT = morton.length() / UNIT_SIZE_2D;
         for (int i = 0; i < LOOP_COUNT; ++i) {
-            int index = PDCode3DTable512Decode.get(morton.substring(
-                    (LOOP_COUNT - (i + 1)) * UNIT_SIZE_3D,
-                    (LOOP_COUNT - i) * UNIT_SIZE_3D));
-            coordinates[0] |= Morton3DTable512Decode[index] << (UNIT_SIZE_3D * i);
-            coordinates[1] |= Morton3DTable512Decode[index >> 1] << (UNIT_SIZE_3D * i);
-            coordinates[2] |= Morton3DTable512Decode[index >> 2] << (UNIT_SIZE_3D * i);
+            int index = PDCode2DTable256Decode.get(morton.substring(
+                    (LOOP_COUNT - (i + 1)) * UNIT_SIZE_2D,
+                    (LOOP_COUNT - i) * UNIT_SIZE_2D));
+            coordinates[0] |= Morton2DTable256Decode[index] << (UNIT_SIZE_2D * i);
+            coordinates[1] |= Morton2DTable256Decode[index >> 1] << (UNIT_SIZE_2D * i);
         }
 
-        if (morton.length() % UNIT_SIZE_3D != 0) {
-            int remainStringSize = morton.length() % UNIT_SIZE_3D;
+        if (morton.length() % UNIT_SIZE_2D != 0) {
+            int remainStringSize = morton.length() % UNIT_SIZE_2D;
             String remainString = morton.substring(morton.length() - remainStringSize);
             sb = new StringBuilder(remainString);
-            for (int i = 0; i < UNIT_SIZE_3D - remainStringSize; i++) {
+            for (int i = 0; i < UNIT_SIZE_2D - remainStringSize; i++) {
                 sb.insert(0, '0');
             }
             String remainPDCode = sb.toString();
-            int index = PDCode3DTable512Decode.get(remainPDCode);
-            coordinates[0] = coordinates[0] << remainStringSize | Morton3DTable512Decode[index];
-            coordinates[1] = coordinates[1] << remainStringSize | Morton3DTable512Decode[index >> 1];
-            coordinates[2] = coordinates[2] << remainStringSize | Morton3DTable512Decode[index >> 2];
+            int index = PDCode2DTable256Decode.get(remainPDCode);
+            coordinates[0] = coordinates[0] << remainStringSize | Morton2DTable256Decode[index];
+            coordinates[1] = coordinates[1] << remainStringSize | Morton2DTable256Decode[index >> 1];
         }
 
-        return new ISEA4DFaceCoordinates(face, coordinates[0], coordinates[1], coordinates[2], resolution);
+        return new ISEA4DFaceCoordinates(face, coordinates[0], coordinates[1], resolution);
     }
 }
