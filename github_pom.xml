@@ -118,5 +118,10 @@
             <artifactId>spatial4j</artifactId>
             <version>0.7</version>
         </dependency>
+        <dependency>
+            <groupId>ch.ethz.globis.phtree</groupId>
+            <artifactId>phtree</artifactId>
+            <version>2.3.0</version>
+        </dependency>
     </dependencies>
 </project>
