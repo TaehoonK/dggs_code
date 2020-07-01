@@ -7,10 +7,11 @@ import org.locationtech.spatial4j.distance.DistanceUtils;
  *
  * @author Franz-Benjamin Mocnik
  */
-public class GeoCoordinates implements Comparable<GeoCoordinates> {
+public class GeoCoordinates implements Comparable<GeoCoordinates>, Cloneable {
     private final Double _lat;
     private final Double _lon;
     private final Double _height;
+    private short _dimension;
 
     /**
      * @param latitude  latitude from WGS84 (UoM: degree)
@@ -25,6 +26,7 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
         this._lat = latitude;
         this._lon = longitude;
         this._height = height;
+        this._dimension = 3;
     }
 
     /**
@@ -33,6 +35,7 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
      */
     public GeoCoordinates(Double latitude, Double longitude) throws IllegalArgumentException {
         this(latitude, longitude, null);
+        this._dimension = 2;
     }
 
     public Double getLat() {
@@ -45,6 +48,10 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
 
     public Double getHeight(){
         return this._height;
+    }
+
+    public short getDimension() {
+        return this._dimension;
     }
 
     /**
@@ -75,5 +82,10 @@ public class GeoCoordinates implements Comparable<GeoCoordinates> {
         if(this._height != null && o._height != null)
             d = Double.compare(this._height, o._height);
         return d;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

@@ -1,6 +1,7 @@
 package jp.go.aist.dggs.utils;
 
 import jp.go.aist.dggs.common.DGGS;
+import jp.go.aist.dggs.geometry.Morton2D;
 import jp.go.aist.dggs.geometry.Morton3D;
 import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -71,7 +72,10 @@ public class MortonUtils {
         ISEA4DFaceCoordinates faceCoordinates = toFaceCoordinate(geoCoordinates);
 
         assert faceCoordinates != null;
-        return Morton3D.encode(faceCoordinates, resolution);
+        if(geoCoordinates.getDimension() == 3)
+            return Morton3D.encode(faceCoordinates, resolution);
+        else
+            return Morton2D.encode(faceCoordinates, resolution);
     }
 
     /**
@@ -102,7 +106,7 @@ public class MortonUtils {
             double origX = ((newPointX - ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
             double origY = ((newPointX + ((1 / (Math.sqrt(3))) * newPointY)) / (NEW_ORIG_X * (-2))) * TOTAL_RANGE;
             double origZ = 0;
-            if(geoCoordinates.getHeight() != null)
+            if(geoCoordinates.getDimension() == 3)
                 origZ = ((H_RANGE + geoCoordinates.getHeight()) / (H_RANGE * 2.0d)) * TOTAL_RANGE_Z;
             if(origX < 0 || origY < 0 || origZ < 0 || origX > TOTAL_RANGE || origY > TOTAL_RANGE || origZ > TOTAL_RANGE_Z)
                 throw new IllegalArgumentException("new Point X (or Y) is not on the rhombus: X = " + origX + " || Y = " + origY  + " || Z = " + origZ);
