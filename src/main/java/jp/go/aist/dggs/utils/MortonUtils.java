@@ -1,6 +1,7 @@
 package jp.go.aist.dggs.utils;
 
 import jp.go.aist.dggs.common.DGGS;
+import jp.go.aist.dggs.geometry.Morton2D;
 import jp.go.aist.dggs.geometry.Morton3D;
 import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -71,7 +72,10 @@ public class MortonUtils {
         ISEA4DFaceCoordinates faceCoordinates = toFaceCoordinate(geoCoordinates);
 
         assert faceCoordinates != null;
-        return Morton3D.encode(faceCoordinates, resolution);
+        if(geoCoordinates.getHeight() != null)
+            return Morton3D.encode(faceCoordinates, resolution);
+        else
+            return Morton2D.encode(faceCoordinates, resolution);
     }
 
     /**

@@ -25,7 +25,7 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
      * @param x          range is from 0 to 4,294,967,295 (2^32 - 1)
      * @param y          range is from 0 to 4,294,967,295 (2^32 - 1)
      * @param z          range is from 0 to 16,777,215 (2^24 - 1)
-     * @param resolution Resolution of generate PD code
+     * @param resolution Resolution of generate face coordinates
      */
     public ISEA4DFaceCoordinates(int face, long x, long y, long z, int resolution) {
         this._face = face;
@@ -33,6 +33,16 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
         this._y = y;
         this._z = z;
         this._res = resolution;
+    }
+
+    /**
+     * @param face       Index of rhombuses (= diamond) from 0 to 9
+     * @param x          range is from 0 to 4,294,967,295 (2^32 - 1)
+     * @param y          range is from 0 to 4,294,967,295 (2^32 - 1)
+     * @param resolution Resolution of generate face coordinates
+     */
+    public ISEA4DFaceCoordinates(int face, long x, long y, int resolution) {
+        this(face, x, y, 0, resolution);
     }
 
     /**
