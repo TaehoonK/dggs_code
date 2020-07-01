@@ -9,6 +9,8 @@ import static jp.go.aist.dggs.common.DGGS.*;
  * @author TaehoonKim AIST DPRT, Research Assistant
  */
 public class Morton3D {
+    final static int DIMENSION = 3;
+
     /**
      * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding.
      *
@@ -45,7 +47,7 @@ public class Morton3D {
             if (mCode != 0) {
                 boolean isSixBits = true;
                 for (int j = 3; j > 0; --j) {
-                    shift = (j - 1) * 9; // UNIT_SIZE * DIMENSION is 9
+                    shift = (j - 1) * UNIT_SIZE_3D * DIMENSION;
                     String partialPDCode = PDCode3DTable512Encode[(int) ((mCode >> shift) & NINE_BIT_MASK)];
                     if (isSixBits) {
                         // Bucket size is 24-bits, it can be distinguished to 6-bits, 9-bits, 9-bits.

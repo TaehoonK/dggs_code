@@ -4,6 +4,7 @@ import static jp.go.aist.dggs.common.DGGS.*;
 
 public class Morton2D {
     final static int DIMENSION = 2;
+
     /**
      * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding.
      *
