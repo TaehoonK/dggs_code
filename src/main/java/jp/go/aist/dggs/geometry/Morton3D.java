@@ -160,7 +160,6 @@ public class Morton3D {
      *
      * @param pdCode Target PD code for getting boundary
      * @return ISEA4DCellBoundary instance
-     * @throws CloneNotSupportedException
      * */
     public static ISEA4DCellBoundary getBoundary(String pdCode) {
         ISEA4DFaceCoordinates faceCoordinates = decode(pdCode);
@@ -173,7 +172,6 @@ public class Morton3D {
      *
      * @param faceCoordinates Target ISEA4D face coordinate for getting boundary
      * @return ISEA4DCellBoundary instance
-     * @throws CloneNotSupportedException
      * */
     public static ISEA4DCellBoundary getBoundary(ISEA4DFaceCoordinates faceCoordinates) {
         // TODO: extend to 3D
