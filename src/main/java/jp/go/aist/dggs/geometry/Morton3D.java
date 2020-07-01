@@ -1,5 +1,8 @@
 package jp.go.aist.dggs.geometry;
 
+import jp.go.aist.dggs.utils.MortonUtils;
+import org.giscience.utils.geogrid.geometry.GeoCoordinates;
+
 import static jp.go.aist.dggs.common.DGGS.*;
 /**
  * Handling PD code (one of type of Morton code) for 3-dimensional DGGS (Discrete Global Grid Systems) cell index
@@ -130,5 +133,50 @@ public class Morton3D {
         }
 
         return new ISEA4DFaceCoordinates(face, coordinates[0], coordinates[1], coordinates[2], resolution);
+    }
+
+    /**
+     * Get a center geodetic coordinates from the given PD code
+     *
+     * @param pdCode Target PD code for getting center geodetic coordinates
+     * @return A geodetic coordinates
+     * */
+    public static GeoCoordinates getCenter(String pdCode) {
+        return MortonUtils.toGeoCoordinate(pdCode);
+    }
+
+    /**
+     * Get a center geodetic coordinate from the given face coordinates
+     *
+     * @param faceCoordinates Target face coordinates for getting center geodetic coordinates
+     * @return A geodetic coordinates
+     * */
+    public static GeoCoordinates getCenter(ISEA4DFaceCoordinates faceCoordinates) {
+        return MortonUtils.toGeoCoordinate(faceCoordinates);
+    }
+
+    /**
+     * Calculate cell boundary coordinate for given input pdCode.
+     *
+     * @param pdCode Target PD code for getting boundary
+     * @return ISEA4DCellBoundary instance
+     * @throws CloneNotSupportedException
+     * */
+    public static ISEA4DCellBoundary getBoundary(String pdCode) {
+        ISEA4DFaceCoordinates faceCoordinates = decode(pdCode);
+
+        return getBoundary(faceCoordinates);
+    }
+
+    /**
+     * Calculate cell boundary coordinate for given input pdCode.
+     *
+     * @param faceCoordinates Target ISEA4D face coordinate for getting boundary
+     * @return ISEA4DCellBoundary instance
+     * @throws CloneNotSupportedException
+     * */
+    public static ISEA4DCellBoundary getBoundary(ISEA4DFaceCoordinates faceCoordinates) {
+        // TODO: extend to 3D
+        return Morton2D.getBoundary(faceCoordinates);
     }
 }
