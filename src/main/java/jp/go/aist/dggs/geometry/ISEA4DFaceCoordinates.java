@@ -76,16 +76,16 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
     }
 
     public long getMaxX() {
-        return (long) Math.pow(2,_res);
+        return Double.valueOf(Math.pow(2,_res) - 1).longValue();
     }
 
     public long getMaxY() {
-        return (long) Math.pow(2,_res);
+        return Double.valueOf(Math.pow(2,_res) - 1).longValue();
     }
 
     public long getMaxZ() {
         return _res < (DGGS.MAX_XY_RESOLUTION - DGGS.MAX_Z_RESOLUTION) ?
-                0 : Double.valueOf(Math.pow(2, (_res - (DGGS.MAX_XY_RESOLUTION - DGGS.MAX_Z_RESOLUTION)))).longValue();
+                0 : Double.valueOf(Math.pow(2, (_res - (DGGS.MAX_XY_RESOLUTION - DGGS.MAX_Z_RESOLUTION))) - 1).longValue();
     }
 
     /**

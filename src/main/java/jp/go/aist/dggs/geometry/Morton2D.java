@@ -1,5 +1,8 @@
 package jp.go.aist.dggs.geometry;
 
+import jp.go.aist.dggs.utils.MortonUtils;
+import org.giscience.utils.geogrid.geometry.GeoCoordinates;
+
 import static jp.go.aist.dggs.common.DGGS.*;
 
 public class Morton2D {
@@ -114,5 +117,66 @@ public class Morton2D {
         }
 
         return new ISEA4DFaceCoordinates(face, coordinates[0], coordinates[1], resolution);
+    }
+
+    /**
+     * Get a center geodetic coordinates from the given PD code
+     *
+     * @param pdCode Target PD code for getting center geodetic coordinates
+     * @return A geodetic coordinates
+     * */
+    public static GeoCoordinates getCenter(String pdCode) {
+        return MortonUtils.toGeoCoordinate(pdCode);
+    }
+
+    /**
+     * Get a center geodetic coordinate from the given face coordinates
+     *
+     * @param faceCoordinates Target face coordinates for getting center geodetic coordinates
+     * @return A geodetic coordinates
+     * */
+    public static GeoCoordinates getCenter(ISEA4DFaceCoordinates faceCoordinates) {
+        return MortonUtils.toGeoCoordinate(faceCoordinates);
+    }
+
+    /**
+     * Calculate cell boundary coordinate for given input pdCode.
+     *
+     * @param pdCode Target PD code for getting boundary
+     * @return ISEA4DCellBoundary instance
+     * @throws CloneNotSupportedException
+     * */
+    public static ISEA4DCellBoundary getBoundary(String pdCode) throws CloneNotSupportedException {
+        ISEA4DFaceCoordinates faceCoordinates = decode(pdCode);
+
+        return getBoundary(faceCoordinates);
+    }
+
+    /**
+     * Calculate cell boundary coordinate for given input pdCode.
+     *
+     * @param faceCoordinates Target ISEA4D face coordinate for getting boundary
+     * @return ISEA4DCellBoundary instance
+     * @throws CloneNotSupportedException
+     * */
+    public static ISEA4DCellBoundary getBoundary(ISEA4DFaceCoordinates faceCoordinates) throws CloneNotSupportedException {
+        GeoCoordinates[] boundary = new GeoCoordinates[4];
+        ISEA4DFaceCoordinates[] neighborCoords = new ISEA4DFaceCoordinates[3];
+        if(faceCoordinates.getX() != faceCoordinates.getMaxX() || faceCoordinates.getY() != faceCoordinates.getMaxY()) {
+            neighborCoords[0] = new ISEA4DFaceCoordinates(faceCoordinates.getFace(), faceCoordinates.getX() + 1, faceCoordinates.getY() + 1, faceCoordinates.getResolution());
+            neighborCoords[1] = new ISEA4DFaceCoordinates(faceCoordinates.getFace(), faceCoordinates.getX() + 1, faceCoordinates.getY(), faceCoordinates.getResolution());
+            neighborCoords[2] = new ISEA4DFaceCoordinates(faceCoordinates.getFace(), faceCoordinates.getX(), faceCoordinates.getY() + 1, faceCoordinates.getResolution());
+        }
+        else {
+            neighborCoords[0] = new ISEA4DFaceCoordinates(faceCoordinates.getFace(), faceCoordinates.getX() - 1, faceCoordinates.getY() - 1, faceCoordinates.getResolution());
+            neighborCoords[1] = new ISEA4DFaceCoordinates(faceCoordinates.getFace(), faceCoordinates.getX() - 1, faceCoordinates.getY(), faceCoordinates.getResolution());
+            neighborCoords[2] = new ISEA4DFaceCoordinates(faceCoordinates.getFace(), faceCoordinates.getX(), faceCoordinates.getY() - 1, faceCoordinates.getResolution());
+        }
+        boundary[0] = getCenter(faceCoordinates);
+        boundary[1] = getCenter(neighborCoords[0]);
+        boundary[2] = getCenter(neighborCoords[1]);
+        boundary[3] = getCenter(neighborCoords[2]);
+
+        return new ISEA4DCellBoundary(boundary);
     }
 }
