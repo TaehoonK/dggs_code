@@ -162,7 +162,7 @@ public class Morton3D {
      * @return ISEA4DCellBoundary instance
      * @throws CloneNotSupportedException
      * */
-    public static ISEA4DCellBoundary getBoundary(String pdCode) throws CloneNotSupportedException {
+    public static ISEA4DCellBoundary getBoundary(String pdCode) {
         ISEA4DFaceCoordinates faceCoordinates = decode(pdCode);
 
         return getBoundary(faceCoordinates);
@@ -175,7 +175,7 @@ public class Morton3D {
      * @return ISEA4DCellBoundary instance
      * @throws CloneNotSupportedException
      * */
-    public static ISEA4DCellBoundary getBoundary(ISEA4DFaceCoordinates faceCoordinates) throws CloneNotSupportedException {
+    public static ISEA4DCellBoundary getBoundary(ISEA4DFaceCoordinates faceCoordinates) {
         // TODO: extend to 3D
         return Morton2D.getBoundary(faceCoordinates);
     }

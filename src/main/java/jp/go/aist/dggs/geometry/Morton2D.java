@@ -159,7 +159,7 @@ public class Morton2D {
      * @return ISEA4DCellBoundary instance
      * @throws CloneNotSupportedException
      * */
-    public static ISEA4DCellBoundary getBoundary(ISEA4DFaceCoordinates faceCoordinates) throws CloneNotSupportedException {
+    public static ISEA4DCellBoundary getBoundary(ISEA4DFaceCoordinates faceCoordinates) {
         GeoCoordinates[] boundary = new GeoCoordinates[4];
         ISEA4DFaceCoordinates[] neighborCoords = new ISEA4DFaceCoordinates[3];
         if(faceCoordinates.getX() != faceCoordinates.getMaxX() || faceCoordinates.getY() != faceCoordinates.getMaxY()) {

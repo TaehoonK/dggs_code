@@ -7,7 +7,7 @@ public class ISEA4DCellBoundary {
     public BoundaryElement[] boundaryElements;
     public GeoCoordinates baryCenter;
 
-    public ISEA4DCellBoundary(GeoCoordinates[] boundary) throws CloneNotSupportedException {
+    public ISEA4DCellBoundary(GeoCoordinates[] boundary) {
         double diffX = Math.abs((boundary[1].getLon() + boundary[0].getLon())/2 - boundary[0].getLon());
         double diffY = Math.abs((boundary[1].getLat() + boundary[0].getLat())/2 - boundary[0].getLat());
 
@@ -21,11 +21,11 @@ public class ISEA4DCellBoundary {
         Arrays.sort(boundaryElements);
     }
 
-    public GeoCoordinates[] toList() throws CloneNotSupportedException {
+    public GeoCoordinates[] toList() {
         GeoCoordinates[] boundary = new GeoCoordinates[4];
 
         for (int i = 0; i < boundaryElements.length; i++) {
-            boundary[i] = (GeoCoordinates) boundaryElements[i].coordinate.clone();
+            boundary[i] = boundaryElements[i].coordinate;
         }
 
         return boundary;
@@ -35,8 +35,8 @@ public class ISEA4DCellBoundary {
         GeoCoordinates coordinate;
         double angle;
 
-        BoundaryElement(GeoCoordinates coordinate, GeoCoordinates baryCenter) throws CloneNotSupportedException {
-            this.coordinate = (GeoCoordinates) coordinate.clone();
+        BoundaryElement(GeoCoordinates coordinate, GeoCoordinates baryCenter) {
+            this.coordinate = new GeoCoordinates(coordinate.getLat(), coordinate.getLon(), coordinate.getHeight());
             angle = Math.atan2(coordinate.getLat() - baryCenter.getLat(), coordinate.getLon() - baryCenter.getLon());
         }
 

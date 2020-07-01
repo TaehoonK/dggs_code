@@ -124,6 +124,10 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
                 _z, _res);
     }
 
+    public long[] toList() {
+        return new long[] {_x, _y, _z};
+    }
+
     @Override
     public String toString() {
         return String.format("res %d face %d x %d y %d z %d", this._res, this._face, this._x, this._y, this._z);
