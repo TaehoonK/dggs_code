@@ -13,7 +13,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Objects;
 
-public class DrawPolygon extends JPanel {
+public class CRSCompareTest extends JPanel {
     private static final int canvas_width = 800;
     private static final int canvas_height = 800;
     Polygon p_on_WGS;
@@ -30,7 +30,7 @@ public class DrawPolygon extends JPanel {
     double[][] polygonISEAOriginCoords;
     long[][] polygonISEACoords;
 
-    public DrawPolygon() throws Exception {
+    public CRSCompareTest() throws Exception {
         randomGeometryCreation();
         p_on_WGS = new Polygon();
         p_on_UTM1 = new Polygon();
@@ -192,8 +192,8 @@ public class DrawPolygon extends JPanel {
         return Math.toDegrees(innerAngle);
     }
 
-    public void randomGeometryCreation() throws Exception {
-        final double random_boundary = 0.0000001;
+    public void randomGeometryCreation() {
+        final double random_boundary = 0.000001;
 
         // Reference EPSG:3095 (https://epsg.io/3095)
         GeoCoordinates c1 = new GeoCoordinates(Math.random() * random_boundary + 34, Math.random() * random_boundary + 135);
@@ -290,7 +290,7 @@ public class DrawPolygon extends JPanel {
 
     public static void main(String[] args) throws Exception {
         JFrame frame = new JFrame();
-        frame.setTitle("Polygon");
+        frame.setTitle("Canvas");
         frame.setSize(canvas_width + 100, canvas_height + 100);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -298,7 +298,7 @@ public class DrawPolygon extends JPanel {
             }
         });
         Container contentPane = frame.getContentPane();
-        contentPane.add(new DrawPolygon());
+        contentPane.add(new CRSCompareTest());
         frame.setVisible(true);
     }
 }
