@@ -1,5 +1,6 @@
 jp.go.aist.dggs.common
 jp.go.aist.dggs.geometry
+jp.go.aist.dggs.query
 jp.go.aist.dggs.utils
 org.giscience.utils.geogrid.generic
 org.giscience.utils.geogrid.geo
