@@ -1,10 +1,10 @@
 package jp.go.aist.dggs.query;
 
 import ch.ethz.globis.phtree.PhTree;
+import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
 import jp.go.aist.dggs.geometry.Morton3D;
 import jp.go.aist.dggs.utils.MortonUtils;
-import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
