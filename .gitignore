@@ -1,2 +1,5 @@
 /target/
 /.idea/
+/src/test/java/jp/go/aist/dggs/CheckDistortion.java
+/src/main/java/org/jengineering/sjmply/
+/src/main/java/org/smurn/jply/
