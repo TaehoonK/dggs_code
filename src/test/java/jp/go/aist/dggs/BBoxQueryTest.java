@@ -38,7 +38,7 @@ public class BBoxQueryTest {
         }
 
         // Generating PH-Tree index
-        PhTree<Object> phTree = PhTree.create(DIM);
+        PhTree<String> phTree = PhTree.create(DIM);
         for(GeoCoordinates coordinates : rawDataset) {
             String pdCode = MortonUtils.toPDCode(coordinates, RES);
             ISEA4DFaceCoordinates faceCoordinates = Morton3D.decode(pdCode, RES);
