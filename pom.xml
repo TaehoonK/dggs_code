@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>aist.dprt</groupId>
     <artifactId>dggs-code</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.2</version>
     <packaging>jar</packaging>
 
     <name>DGGS Morton Code</name>
@@ -121,11 +121,6 @@
             <groupId>ch.ethz.globis.phtree</groupId>
             <artifactId>phtree</artifactId>
             <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
         </dependency>
     </dependencies>
 </project>
