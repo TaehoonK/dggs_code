@@ -1,5 +1,6 @@
 package jp.go.aist.dggs.geometry;
 
+import jp.go.aist.dggs.query.ISEA4DCellBoundary;
 import jp.go.aist.dggs.utils.MortonUtils;
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 
