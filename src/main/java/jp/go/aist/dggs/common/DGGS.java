@@ -249,7 +249,7 @@ public class DGGS {
     // For Morton3D encode and decode from WGS 84 coordinate (EPSG 4326 + altitude)
     public static final int MAX_XY_RESOLUTION   = 32;
     public static final int MAX_Z_RESOLUTION    = 24;
-    public static final double H_RANGE          = 16000.0; // Unit = Meter
+    public static final double H_RANGE          = 14000.0; // Unit = Meter
     public static final double TOTAL_RANGE      = Math.pow(2, MAX_XY_RESOLUTION);
     public static final double TOTAL_RANGE_Z    = Math.pow(2, MAX_Z_RESOLUTION);
     public static final double NEW_ORIG_X       = -0.6022955010474083;

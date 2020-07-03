@@ -19,6 +19,17 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
     private final long _x;
     private final long _y;
     private final long _z;
+    private final boolean _isOrthogonal;
+
+    ISEA4DFaceCoordinates(int face, long x, long y, long z, int resolution, boolean isOrthogonal) {
+        this._face = face;
+        this._x = x;
+        this._y = y;
+        this._z = z;
+        this._res = resolution;
+        this._isOrthogonal = isOrthogonal;
+    }
+
 
     /**
      * @param face       Index of rhombuses (= diamond) from 0 to 9
@@ -33,6 +44,7 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
         this._y = y;
         this._z = z;
         this._res = resolution;
+        this._isOrthogonal = false;
     }
 
     /**
@@ -95,7 +107,10 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
      * @return 2-D distance
      * */
     public double distance2DTo(ISEA4DFaceCoordinates another) {
-        return Math.sqrt(Math.pow(this._x - another.getX(), 2) + Math.pow(this._y - another.getY(), 2));
+        ISEA4DFaceCoordinates from = toOrthogonal();
+        ISEA4DFaceCoordinates to = another.toOrthogonal();
+        return Math.sqrt(Math.pow(from.getX() - to.getY(), 2)
+                + Math.pow(from.getY() - to.getY(), 2));
     }
 
     /**
@@ -105,23 +120,31 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
      * @return 3-D distance
      * */
     public Double distance3DTo(ISEA4DFaceCoordinates another) {
-        return Math.sqrt(Math.pow(this._x - another.getX(), 2) + Math.pow(this._y - another.getY(), 2) + Math.pow(this._z - another.getZ(), 2));
+        ISEA4DFaceCoordinates from = toOrthogonal();
+        ISEA4DFaceCoordinates to = another.toOrthogonal();
+        return Math.sqrt(Math.pow(from.getX() - to.getY(), 2)
+                + Math.pow(from.getY() - to.getY(), 2)
+                + Math.pow(from.getZ() - to.getZ(), 2));
     }
 
     /**
-     * Generate the orthogonal coordinate from this FaceCoordinate.
+     * Generate the orthogonal coordinates from this FaceCoordinate.
      *
-     * @return The orthogonal coordinate on ISEA face
+     * @return The orthogonal coordinates on ISEA face
      * */
     public ISEA4DFaceCoordinates toOrthogonal() {
-        double[] b = {this._x, this._y};
-        RealMatrix matrix_B = MatrixUtils.createColumnRealMatrix(b);
-        RealMatrix rmx = MATRIX_A_INVERSE.multiply(matrix_B);
+        if(!_isOrthogonal) {
+            double[] b = {this._x, this._y};
+            RealMatrix matrix_B = MatrixUtils.createColumnRealMatrix(b);
+            RealMatrix rmx = MATRIX_A_INVERSE.multiply(matrix_B);
 
-        return new ISEA4DFaceCoordinates(_face,
-                Double.valueOf(rmx.getData()[0][0]).longValue(),
-                Double.valueOf(rmx.getData()[1][0]).longValue(),
-                _z, _res);
+            long orthogonal_x = Double.valueOf(rmx.getData()[0][0]).longValue();
+            long orthogonal_y = Double.valueOf(rmx.getData()[1][0] / Math.sqrt(3) * 2).longValue();
+
+            return new ISEA4DFaceCoordinates(_face, orthogonal_x, orthogonal_y, _z, _res, true);
+        }
+
+        return this;
     }
 
     public long[] toList() {
@@ -152,4 +175,6 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
         if (d != 0) return d;
         return Long.compare(first._z, second._z);
     }
+
+
 }
