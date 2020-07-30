@@ -14,8 +14,8 @@ import java.awt.event.WindowEvent;
 import java.util.Objects;
 
 public class CRSCompareTest extends JPanel {
-    private static final int canvas_width = 800;
-    private static final int canvas_height = 800;
+    private static final int canvas_width = 600;
+    private static final int canvas_height = 600;
     Polygon p_on_WGS;
     Polygon p_on_UTM1;
     Polygon p_on_UTM2;

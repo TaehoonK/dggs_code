@@ -20,7 +20,7 @@ import static jp.go.aist.dggs.common.DGGS.*;
  * @author TaehoonKim AIST DPRT, Research Assistant
  */
 
-public class MortonUtils {
+public final class MortonUtils {
     /**
      * Searching a greatest common ancestor from given PD code list.
      *
