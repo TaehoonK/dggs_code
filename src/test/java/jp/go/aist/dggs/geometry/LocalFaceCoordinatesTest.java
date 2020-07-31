@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class LocalFaceCoordinatesTest {
-    private final float delta = 0.000001f;
+    private final float delta = 0.0000001f;
     @Test
     public void toLocal_maxX() {
         ISEA4DFaceCoordinates faceCoordinates = new ISEA4DFaceCoordinates(9, (long) Math.pow(2,32)-1, (long) Math.pow(2,32)-1, 0L);
@@ -14,7 +14,7 @@ public class LocalFaceCoordinatesTest {
 
         LocalFaceCoordinates localFaceCoordinates = faceCoordinates.toLocalize();
         assertEquals(localFaceCoordinates.getFace(), "9333333333");
-        assertEquals(localFaceCoordinates.getX(), 0.838861, delta);
+        assertEquals(localFaceCoordinates.getX(), 0.8388607, delta);
         assertEquals(localFaceCoordinates.getY(), 0, delta);
         assertEquals(localFaceCoordinates.getZ(), 0, delta);
     }
@@ -27,8 +27,8 @@ public class LocalFaceCoordinatesTest {
 
         LocalFaceCoordinates localFaceCoordinates = faceCoordinates.toLocalize();
         assertEquals(localFaceCoordinates.getFace(), "9222222222");
-        assertEquals(localFaceCoordinates.getX(), 0.419430, delta);
-        assertEquals(localFaceCoordinates.getY(), 0.726475, delta);
+        assertEquals(localFaceCoordinates.getX(), 0.4194303, delta);
+        assertEquals(localFaceCoordinates.getY(), 0.7264746, delta);
         assertEquals(localFaceCoordinates.getZ(), 0, delta);
     }
 
@@ -40,8 +40,8 @@ public class LocalFaceCoordinatesTest {
 
         LocalFaceCoordinates localFaceCoordinates = faceCoordinates.toLocalize();
         assertEquals(localFaceCoordinates.getFace(), "9111111111");
-        assertEquals(localFaceCoordinates.getX(), 0.419430, delta);
-        assertEquals(localFaceCoordinates.getY(), -0.726475, delta);
+        assertEquals(localFaceCoordinates.getX(), 0.4194303, delta);
+        assertEquals(localFaceCoordinates.getY(), -0.7264746, delta);
         assertEquals(localFaceCoordinates.getZ(), 0, delta);
     }
 
@@ -55,6 +55,6 @@ public class LocalFaceCoordinatesTest {
         assertEquals(localFaceCoordinates.getFace(), "9000000004");
         assertEquals(localFaceCoordinates.getX(), 0, delta);
         assertEquals(localFaceCoordinates.getY(), 0, delta);
-        assertEquals(localFaceCoordinates.getZ(), 0.838861, delta);
+        assertEquals(localFaceCoordinates.getZ(), 0.8388607, delta);
     }
 }
