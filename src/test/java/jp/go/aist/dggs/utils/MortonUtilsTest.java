@@ -1,15 +1,12 @@
-package jp.go.aist.dggs;
+package jp.go.aist.dggs.utils;
 
 import jp.go.aist.dggs.common.DGGS;
 import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
-import jp.go.aist.dggs.utils.MortonUtils;
 import org.giscience.utils.geogrid.generic.Trigonometric;
 import org.giscience.utils.geogrid.geometry.FaceCoordinates;
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import org.giscience.utils.geogrid.projections.ISEAProjection;
-import org.junit.Assert;
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -21,7 +18,7 @@ public class MortonUtilsTest {
     @Test
     public void getCommonAncestor() {
         String[] pdCodeList = {"12343241532167","12342451","1234512983012308"};
-        Assert.assertEquals("1234", MortonUtils.getGreatestCommonAncestor(pdCodeList));
+        assertEquals("1234", MortonUtils.getGreatestCommonAncestor(pdCodeList));
     }
 
     @Test
@@ -33,7 +30,7 @@ public class MortonUtilsTest {
     @Test
     public void getCommonAncestor_Equal() {
         String[] pdCodeList = {"1023","1023"};
-        Assert.assertEquals("1023", MortonUtils.getGreatestCommonAncestor(pdCodeList));
+        assertEquals("1023", MortonUtils.getGreatestCommonAncestor(pdCodeList));
     }
 
     @Test

@@ -1,13 +1,11 @@
-package jp.go.aist.dggs;
+package jp.go.aist.dggs.query;
 
 import ch.ethz.globis.phtree.PhTree;
-import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
-import jp.go.aist.dggs.geometry.Morton3D;
-import jp.go.aist.dggs.query.BBoxQuery;
-import jp.go.aist.dggs.utils.MortonUtils;
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import org.junit.Test;
-
+import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
+import jp.go.aist.dggs.geometry.Morton3D;
+import jp.go.aist.dggs.utils.MortonUtils;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;

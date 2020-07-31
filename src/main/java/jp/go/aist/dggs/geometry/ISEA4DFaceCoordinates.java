@@ -124,6 +124,15 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
                 _z, _res);
     }
 
+    /**
+     * Generate the localized coordinate from this FaceCoordinate.
+     *
+     * @return The localized coordinate
+     * */
+    public LocalFaceCoordinates toLocalize() {
+        return new LocalFaceCoordinates(this);
+    }
+
     public long[] toList() {
         return new long[] {_x, _y, _z};
     }
