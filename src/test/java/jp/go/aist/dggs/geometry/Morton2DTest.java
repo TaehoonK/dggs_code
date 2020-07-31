@@ -1,14 +1,9 @@
-package jp.go.aist.dggs;
+package jp.go.aist.dggs.geometry;
 
-import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
-import jp.go.aist.dggs.geometry.Morton2D;
-import org.junit.Assert;
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
 /**
- *
  * @author TaehoonKim AIST DPRT, Research Assistant
  * */
 public class Morton2DTest {
@@ -16,12 +11,12 @@ public class Morton2DTest {
 
     @Test
     public void encode() {
-        Assert.assertEquals("100", Morton2D.encode(new ISEA4DFaceCoordinates(1,10,12,2)));
-        Assert.assertEquals("10000", Morton2D.encode(new ISEA4DFaceCoordinates(1,10,12,4)));
-        Assert.assertEquals("100000000000000000000000000003210", Morton2D.encode(new ISEA4DFaceCoordinates(1,10,12,32)));
-        Assert.assertEquals("132131320021111031113113012133203", Morton2D.encode(new ISEA4DFaceCoordinates(1,3158179513L,3594588765L,32)));
-        Assert.assertEquals("132131320021111031113", Morton2D.encode(new ISEA4DFaceCoordinates(1,3158179513L,3594588765L,20)));
-        Assert.assertEquals("13213132002", Morton2D.encode(new ISEA4DFaceCoordinates(1,3158179513L,3594588765L,10)));
+        assertEquals("100", Morton2D.encode(new ISEA4DFaceCoordinates(1,10,12,2)));
+        assertEquals("10000", Morton2D.encode(new ISEA4DFaceCoordinates(1,10,12,4)));
+        assertEquals("100000000000000000000000000003210", Morton2D.encode(new ISEA4DFaceCoordinates(1,10,12,32)));
+        assertEquals("132131320021111031113113012133203", Morton2D.encode(new ISEA4DFaceCoordinates(1,3158179513L,3594588765L,32)));
+        assertEquals("132131320021111031113", Morton2D.encode(new ISEA4DFaceCoordinates(1,3158179513L,3594588765L,20)));
+        assertEquals("13213132002", Morton2D.encode(new ISEA4DFaceCoordinates(1,3158179513L,3594588765L,10)));
     }
 
     @Test

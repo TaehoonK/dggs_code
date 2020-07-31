@@ -1,13 +1,11 @@
-package jp.go.aist.dggs;
+package jp.go.aist.dggs.query;
 
 import ch.ethz.globis.phtree.PhTree;
-import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
-import jp.go.aist.dggs.geometry.Morton3D;
-import jp.go.aist.dggs.query.BBoxQuery;
-import jp.go.aist.dggs.utils.MortonUtils;
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import org.junit.Test;
-
+import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
+import jp.go.aist.dggs.geometry.Morton3D;
+import jp.go.aist.dggs.utils.MortonUtils;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
@@ -38,7 +36,7 @@ public class BBoxQueryTest {
         }
 
         // Generating PH-Tree index
-        PhTree<Object> phTree = PhTree.create(DIM);
+        PhTree<String> phTree = PhTree.create(DIM);
         for(GeoCoordinates coordinates : rawDataset) {
             String pdCode = MortonUtils.toPDCode(coordinates, RES);
             ISEA4DFaceCoordinates faceCoordinates = Morton3D.decode(pdCode, RES);

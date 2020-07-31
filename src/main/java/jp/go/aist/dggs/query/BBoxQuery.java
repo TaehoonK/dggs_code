@@ -20,13 +20,13 @@ public class BBoxQuery {
      * @param phTree Index tree of point cloud dataset
      * @return An iterator of the PD codes list, which contained a given bounding box
      * */
-    public static Iterator doBBoxQuery(GeoCoordinates minCoords, GeoCoordinates maxCoords, int resolution, PhTree phTree) {
+    public static Iterator<String> doBBoxQuery(GeoCoordinates minCoords, GeoCoordinates maxCoords, int resolution, PhTree<String> phTree) {
         HashSet<String> result = getBBoxQueryResult(minCoords, maxCoords, resolution, phTree);
 
         return result.iterator();
     }
 
-    public static HashSet<String> getBBoxQueryResult(GeoCoordinates minCoords, GeoCoordinates maxCoords, int resolution, PhTree phTree) {
+    public static HashSet<String> getBBoxQueryResult(GeoCoordinates minCoords, GeoCoordinates maxCoords, int resolution, PhTree<String> phTree) {
         if(minCoords.getDimension() != maxCoords.getDimension() && phTree.getDim() != minCoords.getDimension()) {
             throw new IllegalArgumentException();
         }
@@ -36,22 +36,20 @@ public class BBoxQuery {
 
         // Collect each query result from queryList
         for(QueryRange qr : queryList) {
-            PhTree.PhQuery<Object> tempResult = phTree.query(qr.minPoint, qr.maxPoint);
+            PhTree.PhQuery<String> tempResult = phTree.query(qr.minPoint, qr.maxPoint);
             while (tempResult.hasNext()) {
-                String pdCode = (String) tempResult.nextValue();
+                String pdCode = tempResult.nextValue();
                 result.add(pdCode);
             }
         }
         return result;
     }
 
-    private static ArrayList<QueryRange> translateQueryRange(GeoCoordinates minCoords, GeoCoordinates maxCoords, int resolution) {
+    private static ArrayList<QueryRange> translateQueryRange(GeoCoordinates coordLL, GeoCoordinates coordRU, int resolution) {
         ArrayList<QueryRange> queryList         = new ArrayList<>();
         ArrayList<Long> bottomBoundaryValueList = new ArrayList<>();
         ArrayList<Long> topBoundaryValueList    = new ArrayList<>();
 
-        GeoCoordinates coordLL = minCoords;
-        GeoCoordinates coordRU = maxCoords;
         GeoCoordinates coordLU = new GeoCoordinates(coordRU.getLat(), coordLL.getLon(), coordRU.getHeight());
         GeoCoordinates coordRL = new GeoCoordinates(coordLL.getLat(), coordRU.getLon(), coordLL.getHeight());
 
@@ -69,9 +67,9 @@ public class BBoxQuery {
             GeoCoordinates centerP                  = Morton3D.getCenter(faceCoordinates);
             GeoCoordinates[] boundary               = Morton3D.getBoundary(faceCoordinates).toList();
 
-            if(centerP.getLon() > minCoords.getLon() && bottomBoundaryValue > queryLL._faceCoordinates.getY()) {
+            if(centerP.getLon() > coordLL.getLon() && bottomBoundaryValue > queryLL._faceCoordinates.getY()) {
                 bottomBoundaryValue--;
-            } else if(boundary[2].getLon() < minCoords.getLon()) {
+            } else if(boundary[2].getLon() < coordLL.getLon()) {
                 bottomBoundaryValue++;
             }
             bottomBoundaryValueList.add(bottomBoundaryValue);
@@ -86,9 +84,9 @@ public class BBoxQuery {
             GeoCoordinates centerP                  = Morton3D.getCenter(faceCoordinates);
             GeoCoordinates[] boundary               = Morton3D.getBoundary(faceCoordinates).toList();
 
-            if(centerP.getLat() > minCoords.getLat()) {
+            if(centerP.getLat() > coordLL.getLat()) {
                 bottomBoundaryValue--;
-            } else if(boundary[3].getLat() < minCoords.getLat()) {
+            } else if(boundary[3].getLat() < coordLL.getLat()) {
                 bottomBoundaryValue++;
             }
             bottomBoundaryValueList.add(bottomBoundaryValue);
@@ -101,9 +99,9 @@ public class BBoxQuery {
             GeoCoordinates centerP                  = Morton3D.getCenter(faceCoordinates);
             GeoCoordinates[] boundary               = Morton3D.getBoundary(faceCoordinates).toList();
 
-            if(centerP.getLat() < maxCoords.getLat() && topBoundaryValue < queryRU._faceCoordinates.getY()) {
+            if(centerP.getLat() < coordRU.getLat() && topBoundaryValue < queryRU._faceCoordinates.getY()) {
                 topBoundaryValue++;
-            } else if(boundary[1].getLat() > maxCoords.getLat()) {
+            } else if(boundary[1].getLat() > coordRU.getLat()) {
                 topBoundaryValue--;
             }
             topBoundaryValueList.add(topBoundaryValue);
@@ -118,9 +116,9 @@ public class BBoxQuery {
             GeoCoordinates centerP                  = Morton3D.getCenter(faceCoordinates);
             GeoCoordinates[] boundary               = Morton3D.getBoundary(faceCoordinates).toList();
 
-            if(centerP.getLon() < maxCoords.getLon()) {
+            if(centerP.getLon() < coordRU.getLon()) {
                 topBoundaryValue++;
-            } else if(boundary[0].getLon() > maxCoords.getLon()) {
+            } else if(boundary[0].getLon() > coordRU.getLon()) {
                 topBoundaryValue--;
             }
             topBoundaryValueList.add(topBoundaryValue);
@@ -137,7 +135,7 @@ public class BBoxQuery {
             long max = topBoundaryValueList.get(i);
             long[] minPoint, maxPoint;
 
-            if(minCoords.getDimension() == 2) {
+            if(coordLL.getDimension() == 2) {
                 minPoint = new long[]{tempX, min};
                 maxPoint = new long[]{tempX, max};
             } else {
