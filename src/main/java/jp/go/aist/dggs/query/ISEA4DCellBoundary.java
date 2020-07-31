@@ -1,4 +1,4 @@
-package jp.go.aist.dggs.geometry;
+package jp.go.aist.dggs.query;
 
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import java.util.Arrays;
