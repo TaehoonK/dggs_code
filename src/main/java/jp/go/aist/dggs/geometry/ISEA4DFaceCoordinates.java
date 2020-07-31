@@ -13,7 +13,7 @@ import static jp.go.aist.dggs.common.DGGS.MATRIX_A_INVERSE;
  *
  * @author Taehoon Kim
  */
-public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
+public class ISEA4DFaceCoordinates {
     private final int _res;
     private final int _face;
     private final long _x;
@@ -29,7 +29,6 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
         this._res = resolution;
         this._isOrthogonal = isOrthogonal;
     }
-
 
     /**
      * @param face       Index of rhombuses (= diamond) from 0 to 9
@@ -139,7 +138,7 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
             RealMatrix rmx = MATRIX_A_INVERSE.multiply(matrix_B);
 
             long orthogonal_x = Double.valueOf(rmx.getData()[0][0]).longValue();
-            long orthogonal_y = Double.valueOf(rmx.getData()[1][0] / Math.sqrt(3) * 2).longValue();
+            long orthogonal_y = Double.valueOf(rmx.getData()[1][0]).longValue();
 
             return new ISEA4DFaceCoordinates(_face, orthogonal_x, orthogonal_y, _z, _res, true);
         }
@@ -164,26 +163,4 @@ public class ISEA4DFaceCoordinates implements Comparable<ISEA4DFaceCoordinates>{
     public String toString() {
         return String.format("res %d face %d x %d y %d z %d", this._res, this._face, this._x, this._y, this._z);
     }
-
-    @Override
-    public int compareTo(ISEA4DFaceCoordinates second) {
-        ISEA4DFaceCoordinates first = this;
-        if(first._res != second._res) {
-            if(first._res > second._res) {
-                first = MortonUtils.toFaceCoordinate(first, second._res);
-            }
-            else {
-                second = MortonUtils.toFaceCoordinate(second, first._res);
-            }
-        }
-
-        int d;
-        d = Long.compare(first._x, second._x);
-        if (d != 0) return d;
-        d = Long.compare(first._y, second._y);
-        if (d != 0) return d;
-        return Long.compare(first._z, second._z);
-    }
-
-
 }
