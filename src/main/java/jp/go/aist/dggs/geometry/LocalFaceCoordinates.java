@@ -2,16 +2,21 @@ package jp.go.aist.dggs.geometry;
 
 import jp.go.aist.dggs.common.DGGS;
 
+import static jp.go.aist.dggs.common.DGGS.EIGHT_BIT_MASK;
+import static jp.go.aist.dggs.common.DGGS.Morton2DTable256Encode;
+
 public class LocalFaceCoordinates {
     private final int _local_resolution = 9;
-    private final String _face;
+    private final int _face;
     private final float _x;
     private final float _y;
     private final float _z;
 
     public LocalFaceCoordinates(ISEA4DFaceCoordinates faceCoordinates) {
-        _face = Morton3D.encode(faceCoordinates).substring(0,_local_resolution + 1);
-        StringBuilder sb = new StringBuilder(_face);
+        String localMorton = Morton3D.encode(faceCoordinates).substring(0, _local_resolution + 1);
+        _face = getIntFace(localMorton);
+
+        StringBuilder sb = new StringBuilder(localMorton);
         for (int i = 0; i < DGGS.MAX_XY_RESOLUTION - _local_resolution; i++) {
             sb.append('0');
         }
@@ -23,7 +28,23 @@ public class LocalFaceCoordinates {
         _z = (float) (orthogonalCoords.getZ() - fixedFaceCoords.getZ()) / 10000000f;
     }
 
-    public String getFace() {
+    private int getIntFace(String localMorton) {
+        ISEA4DFaceCoordinates localFace = Morton3D.decode(localMorton, _local_resolution);
+        int x = (int) localFace.getX();
+        int y = (int) localFace.getY();
+        int z = (int) localFace.getZ();
+        int _int_face = 0;
+        _int_face = _int_face
+                | localFace.getFace() << 19
+                | Morton2DTable256Encode[(int) (y & EIGHT_BIT_MASK)] << 4
+                | Morton2DTable256Encode[(int) (x & EIGHT_BIT_MASK)] << 3
+                | z & 0x00000001 << 2
+                | y & 0x00000001 << 1
+                | x & 0x00000001;
+        return _int_face;
+    }
+
+    public int getFace() {
         return this._face;
     }
 
@@ -45,7 +66,7 @@ public class LocalFaceCoordinates {
 
     @Override
     public String toString() {
-        return String.format("face %s x %f y %f z %f", this._face, this._x, this._y, this._z);
+        return String.format("face %d x %f y %f z %f", this._face, this._x, this._y, this._z);
     }
 
 
