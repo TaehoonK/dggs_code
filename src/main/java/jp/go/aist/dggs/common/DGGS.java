@@ -10,14 +10,14 @@ import java.util.Map;
  *
  * @author TaehoonKim AIST DPRT, Research Assistant
  * */
-public class DGGS {
+public final class DGGS {
     // For Morton3D encode and decode from rhombus index
     public static final long EIGHT_BIT_MASK = 0x000000FF;
     public static final long NINE_BIT_MASK  = 0x000001FF;
     public static final int UNIT_SIZE_3D = 3;
     public static final int UNIT_SIZE_2D = 4;
 
-    public static final long[] Morton2DTable256Encode
+    public static final int[] Morton2DTable256Encode
             = {
             0x0000, 0x0001, 0x0004, 0x0005, 0x0010, 0x0011, 0x0014, 0x0015,
             0x0040, 0x0041, 0x0044, 0x0045, 0x0050, 0x0051, 0x0054, 0x0055,
