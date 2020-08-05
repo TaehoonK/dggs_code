@@ -3,9 +3,25 @@ package jp.go.aist.dggs.geometry;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class LocalFaceCoordinatesTest {
     private final float delta = 0.0000001f;
+
+    @Test
+    public void toLocal_temp() {
+        String mortonA = "803323032244674622345202112244267";
+        String mortonB = "803323032600230766052631760355544";
+
+        ISEA4DFaceCoordinates faceCoordinateA = Morton3D.decode(mortonA);
+        ISEA4DFaceCoordinates faceCoordinateB = Morton3D.decode(mortonB);
+
+        LocalFaceCoordinates localFaceCoordA = faceCoordinateA.toLocalize();
+        LocalFaceCoordinates localFaceCoordB = faceCoordinateB.toLocalize();
+
+        assertNotEquals(localFaceCoordA.getFace(), localFaceCoordB.getFace());
+    }
+
     @Test
     public void toLocal_maxX() {
         ISEA4DFaceCoordinates faceCoordinates = new ISEA4DFaceCoordinates(9, (long) Math.pow(2,32)-1, (long) Math.pow(2,32)-1, 0L);
@@ -52,7 +68,7 @@ public class LocalFaceCoordinatesTest {
         assertEquals(mortonCode, "900000000444444444444444444444444");
 
         LocalFaceCoordinates localFaceCoordinates = faceCoordinates.toLocalize();
-        assertEquals(localFaceCoordinates.getFace(), 0b10010000000000000000000);
+        assertEquals(localFaceCoordinates.getFace(), 0b10010000000000000000100);
         assertEquals(localFaceCoordinates.getX(), 0, delta);
         assertEquals(localFaceCoordinates.getY(), 0, delta);
         assertEquals(localFaceCoordinates.getZ(), 0.8388607, delta);
