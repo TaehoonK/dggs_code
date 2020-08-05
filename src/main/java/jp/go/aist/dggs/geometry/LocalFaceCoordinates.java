@@ -38,9 +38,9 @@ public class LocalFaceCoordinates {
                 | localFace.getFace() << 19
                 | Morton2DTable256Encode[(int) (y & EIGHT_BIT_MASK)] << 4
                 | Morton2DTable256Encode[(int) (x & EIGHT_BIT_MASK)] << 3
-                | z & 0x00000001 << 2
-                | y & 0x00000001 << 1
-                | x & 0x00000001;
+                | (z & 0x00000001) << 2
+                | (y & 0x00000001) << 1
+                | (x & 0x00000001);
         return _int_face;
     }
 
