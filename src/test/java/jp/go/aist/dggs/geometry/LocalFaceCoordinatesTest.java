@@ -68,7 +68,7 @@ public class LocalFaceCoordinatesTest {
         assertEquals(mortonCode, "900000000444444444444444444444444");
 
         LocalFaceCoordinates localFaceCoordinates = faceCoordinates.toLocalize();
-        assertEquals(localFaceCoordinates.getFace(), 0b10010000000000000000000);
+        assertEquals(localFaceCoordinates.getFace(), 0b10010000000000000000100);
         assertEquals(localFaceCoordinates.getX(), 0, delta);
         assertEquals(localFaceCoordinates.getY(), 0, delta);
         assertEquals(localFaceCoordinates.getZ(), 0.8388607, delta);
