@@ -6,7 +6,8 @@ import static jp.go.aist.dggs.common.DGGS.EIGHT_BIT_MASK;
 import static jp.go.aist.dggs.common.DGGS.Morton2DTable256Encode;
 
 public class LocalFaceCoordinates {
-    private final int _local_resolution = 9;
+    private final static int _local_resolution = 9;
+    private final static int _base_z = (int) Math.pow(2,23); // -> orignal data z value = 0
     private final int _face;
     private final float _x;
     private final float _y;
@@ -23,22 +24,21 @@ public class LocalFaceCoordinates {
         ISEA4DFaceCoordinates fixedFaceCoords = Morton3D.decode(sb.toString()).toOrthogonal();
         ISEA4DFaceCoordinates orthogonalCoords = faceCoordinates.toOrthogonal();
 
-        _x = (float) (orthogonalCoords.getX() - fixedFaceCoords.getX()) / 10000000f;
-        _y = (float) (orthogonalCoords.getY() - fixedFaceCoords.getY()) / 10000000f;
-        _z = (float) (orthogonalCoords.getZ() - fixedFaceCoords.getZ()) / 10000000f;
+        _x = (float) (orthogonalCoords.getX() - fixedFaceCoords.getX()) / 1000000f;
+        _y = (float) (orthogonalCoords.getY() - fixedFaceCoords.getY()) / 1000000f;
+        _z = (float) (orthogonalCoords.getZ() - _base_z) / 1000000f;
     }
 
     private int getIntFace(String localMorton) {
         ISEA4DFaceCoordinates localFace = Morton3D.decode(localMorton, _local_resolution);
         int x = (int) localFace.getX();
         int y = (int) localFace.getY();
-        int z = (int) localFace.getZ();
+
         int _int_face = 0;
         _int_face = _int_face
-                | localFace.getFace() << 19
-                | Morton2DTable256Encode[(int) (y & EIGHT_BIT_MASK)] << 4
-                | Morton2DTable256Encode[(int) (x & EIGHT_BIT_MASK)] << 3
-                | (z & 0x00000001) << 2
+                | localFace.getFace() << 18
+                | Morton2DTable256Encode[(int) (y & EIGHT_BIT_MASK)] << 3
+                | Morton2DTable256Encode[(int) (x & EIGHT_BIT_MASK)] << 2
                 | (y & 0x00000001) << 1
                 | (x & 0x00000001);
         return _int_face;

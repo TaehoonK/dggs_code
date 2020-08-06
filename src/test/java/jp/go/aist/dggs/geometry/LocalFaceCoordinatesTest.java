@@ -19,7 +19,7 @@ public class LocalFaceCoordinatesTest {
         LocalFaceCoordinates localFaceCoordA = faceCoordinateA.toLocalize();
         LocalFaceCoordinates localFaceCoordB = faceCoordinateB.toLocalize();
 
-        assertNotEquals(localFaceCoordA.getFace(), localFaceCoordB.getFace());
+        assertEquals(localFaceCoordA.getFace(), localFaceCoordB.getFace());
     }
 
     @Test
@@ -29,10 +29,10 @@ public class LocalFaceCoordinatesTest {
         assertEquals(mortonCode, "933333333333333333333333333333333");
 
         LocalFaceCoordinates localFaceCoordinates = faceCoordinates.toLocalize();
-        assertEquals(localFaceCoordinates.getFace(), 0b10011111111111111111011);
+        assertEquals(localFaceCoordinates.getFace(), 0b1001111111111111111111);
         assertEquals(localFaceCoordinates.getX(), 0.8388607, delta);
         assertEquals(localFaceCoordinates.getY(), 0, delta);
-        assertEquals(localFaceCoordinates.getZ(), 0, delta);
+        assertEquals(localFaceCoordinates.getZ(), -Math.pow(2,23)/10000000f, delta);
     }
 
     @Test
@@ -42,10 +42,10 @@ public class LocalFaceCoordinatesTest {
         assertEquals(mortonCode, "922222222222222222222222222222222");
 
         LocalFaceCoordinates localFaceCoordinates = faceCoordinates.toLocalize();
-        assertEquals(localFaceCoordinates.getFace(), 0b10011010101010101010010);
+        assertEquals(localFaceCoordinates.getFace(), 0b1001101010101010101010);
         assertEquals(localFaceCoordinates.getX(), 0.4194303, delta);
         assertEquals(localFaceCoordinates.getY(), 0.7264746, delta);
-        assertEquals(localFaceCoordinates.getZ(), 0, delta);
+        assertEquals(localFaceCoordinates.getZ(), -Math.pow(2,23)/10000000f, delta);
     }
 
     @Test
@@ -55,10 +55,10 @@ public class LocalFaceCoordinatesTest {
         assertEquals(mortonCode, "911111111111111111111111111111111");
 
         LocalFaceCoordinates localFaceCoordinates = faceCoordinates.toLocalize();
-        assertEquals(localFaceCoordinates.getFace(), 0b10010101010101010101001);
+        assertEquals(localFaceCoordinates.getFace(), 0b1001010101010101010101);
         assertEquals(localFaceCoordinates.getX(), 0.4194303, delta);
         assertEquals(localFaceCoordinates.getY(), -0.7264746, delta);
-        assertEquals(localFaceCoordinates.getZ(), 0, delta);
+        assertEquals(localFaceCoordinates.getZ(), -Math.pow(2,23)/10000000f, delta);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class LocalFaceCoordinatesTest {
         assertEquals(mortonCode, "900000000444444444444444444444444");
 
         LocalFaceCoordinates localFaceCoordinates = faceCoordinates.toLocalize();
-        assertEquals(localFaceCoordinates.getFace(), 0b10010000000000000000100);
+        assertEquals(localFaceCoordinates.getFace(), 0b1001000000000000000000);
         assertEquals(localFaceCoordinates.getX(), 0, delta);
         assertEquals(localFaceCoordinates.getY(), 0, delta);
         assertEquals(localFaceCoordinates.getZ(), 0.8388607, delta);
