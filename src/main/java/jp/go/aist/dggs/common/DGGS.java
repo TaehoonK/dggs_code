@@ -2,6 +2,8 @@ package jp.go.aist.dggs.common;
 
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -249,9 +251,11 @@ public final class DGGS {
     // For Morton3D encode and decode from WGS 84 coordinate (EPSG 4326 + altitude)
     public static final int MAX_XY_RESOLUTION   = 32;
     public static final int MAX_Z_RESOLUTION    = 24;
+    public static final long T_RANGE            = Instant.parse("2030-01-01T00:00:00Z").getEpochSecond();
     public static final double H_RANGE          = 14989.1756804936; // Unit = Meter
     public static final double TOTAL_RANGE      = Math.pow(2, MAX_XY_RESOLUTION);
     public static final double TOTAL_RANGE_Z    = Math.pow(2, MAX_Z_RESOLUTION);
+    public static final double TOTAL_RANGE_T    = Math.pow(2, MAX_Z_RESOLUTION);
     public static final double NEW_ORIG_X       = -0.6022955010474083;
     public static final double NEW_ORIG_Y       = -0.3477354707379958;
     // # Convert coordinates from skewed system to Cartesian system (origin at left)

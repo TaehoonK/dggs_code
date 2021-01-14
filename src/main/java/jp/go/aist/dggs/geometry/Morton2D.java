@@ -81,7 +81,6 @@ public class Morton2D {
         int face = Integer.parseInt(pdCode.substring(0, 1));
         String morton = pdCode.substring(1);
 
-
         int extraSize = resolution - morton.length();
         StringBuilder sb = new StringBuilder(morton);
         if(extraSize > 0) {

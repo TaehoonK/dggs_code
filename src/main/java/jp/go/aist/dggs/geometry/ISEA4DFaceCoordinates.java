@@ -5,6 +5,8 @@ import jp.go.aist.dggs.utils.MortonUtils;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 
+import java.time.Instant;
+
 import static jp.go.aist.dggs.common.DGGS.MATRIX_A_INVERSE;
 
 /**
@@ -84,6 +86,10 @@ public class ISEA4DFaceCoordinates {
 
     public long getZ() {
         return this._z;
+    }
+
+    public Instant getT() {
+        return Instant.ofEpochSecond(this._z);
     }
 
     public long getMaxX() {

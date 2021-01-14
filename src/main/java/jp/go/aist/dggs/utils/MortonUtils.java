@@ -10,6 +10,8 @@ import org.giscience.utils.geogrid.geometry.FaceCoordinates;
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import org.giscience.utils.geogrid.projections.ISEAProjection;
 
+import java.time.Instant;
+
 import static jp.go.aist.dggs.common.DGGS.*;
 
 /**
@@ -76,6 +78,23 @@ public final class MortonUtils {
             return Morton3D.encode(faceCoordinates, resolution);
         else
             return Morton2D.encode(faceCoordinates, resolution);
+    }
+
+    /**
+     * PD code (DGGS Morton for point cloud) encoding from 2-D (or 3-D) geodetic coordinates.
+     *
+     * @param geoCoordinates    Geodetic coordinate (WGS 84 2-D (EPSG:4326) or WGS 84 3-D (EPSG:4979))
+     * @param resolution        Target resolution for PD code encoding
+     * @return PD code (DGGS Morton for point cloud)
+     */
+    public static String toPDCode(GeoCoordinates geoCoordinates, Instant time, int resolution) {
+        ISEA4DFaceCoordinates faceCoordinates = toFaceCoordinate(geoCoordinates);
+
+        assert faceCoordinates != null;
+        if(geoCoordinates.getDimension() == 3)
+            return Morton3D.encode(faceCoordinates, time, resolution);
+        else
+            return null; // TODO exception handling
     }
 
     /**

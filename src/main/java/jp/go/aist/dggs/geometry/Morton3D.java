@@ -4,6 +4,8 @@ import jp.go.aist.dggs.query.ISEA4DCellBoundary;
 import jp.go.aist.dggs.utils.MortonUtils;
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 
+import java.time.Instant;
+
 import static jp.go.aist.dggs.common.DGGS.*;
 /**
  * Handling PD code (one of type of Morton code) for 3-dimensional DGGS (Discrete Global Grid Systems) cell index
@@ -29,6 +31,17 @@ public class Morton3D {
      * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding.
      *
      * @param faceCoordinates   ISEA4D face coordinate
+     * @param time              Timestamp
+     * @return PD code: Point cloud DGGS code, DGGS Morton for point cloud
+     */
+    public static String encode(ISEA4DFaceCoordinates faceCoordinates, Instant time) {
+        return encode(faceCoordinates, time, faceCoordinates.getResolution());
+    }
+
+    /**
+     * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding.
+     *
+     * @param faceCoordinates   ISEA4D face coordinate
      * @param resolution        Target resolution of PD code
      * @return PD code: Point cloud DGGS code, DGGS Morton for point cloud
      */
@@ -36,6 +49,27 @@ public class Morton3D {
         long x = faceCoordinates.getX();
         long y = faceCoordinates.getY();
         long z = faceCoordinates.getZ();
+
+        return getPDCode(faceCoordinates, resolution, x, y, z);
+    }
+
+    /**
+     * PD code (Point cloud DGGS code, DGGS Morton for point cloud) encoding.
+     *
+     * @param faceCoordinates   ISEA4D face coordinate
+     * @param time              Timestamp
+     * @param resolution        Target resolution of PD code
+     * @return PD code: Point cloud DGGS code, DGGS Morton for point cloud
+     */
+    public static String encode(ISEA4DFaceCoordinates faceCoordinates, Instant time, int resolution) {
+        long x = faceCoordinates.getX();
+        long y = faceCoordinates.getY();
+        long t = (long) (time.getEpochSecond() / T_RANGE * TOTAL_RANGE_T);
+
+        return getPDCode(faceCoordinates, resolution, x, y, t);
+    }
+
+    private static String getPDCode(ISEA4DFaceCoordinates faceCoordinates, int resolution, long x, long y, long z) {
         long mCode;
         StringBuilder pdCode = new StringBuilder(String.valueOf(faceCoordinates.getFace()));
 
@@ -71,7 +105,6 @@ public class Morton3D {
         }
 
         pdCode = new StringBuilder(pdCode.length() > resolution + 1 ? pdCode.substring(0, resolution + 1) : pdCode.toString());
-
         return pdCode.toString();
     }
 

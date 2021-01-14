@@ -1,6 +1,10 @@
 package jp.go.aist.dggs.geometry;
 
+import jp.go.aist.dggs.common.DGGS;
 import org.junit.Test;
+
+import java.time.Instant;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -19,6 +23,16 @@ public class Morton3DTest {
         assertEquals("10000000000", Morton3D.encode(new ISEA4DFaceCoordinates(1,1419627,243658,2097151,10)));
 
         assertEquals("000000000000000000000000000003650", Morton3D.encode(new ISEA4DFaceCoordinates(0,10,12,6,32)));
+    }
+
+    @Test
+    public void encode_time() {
+        Instant maxtime = Instant.parse("2030-01-01T00:00:00Z");
+        Instant curtime = Instant.now();
+        System.out.println(curtime.getEpochSecond());
+        System.out.println(maxtime.getEpochSecond());
+        System.out.println(maxtime.getEpochSecond() - curtime.getEpochSecond());
+        System.out.println((long) DGGS.TOTAL_RANGE_Z);
     }
 
     @Test
