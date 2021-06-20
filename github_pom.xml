@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>aist.dprt</groupId>
     <artifactId>dggs-code</artifactId>
-    <version>0.8.3</version>
+    <version>0.9.0</version>
     <packaging>jar</packaging>
 
-    <name>DGGS Morton Code</name>
+    <name>DGGS Morton Code (Github)</name>
     <description>Handling DGGS Morton code for point cloud (encoding, decoding)</description>
     <url>https://github.com/TaehoonK/dggs_code</url>
 
@@ -79,7 +79,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -89,6 +89,12 @@
                         </goals>
                     </execution>
                 </executions>
+                <!-- For mac OS
+                <configuration>
+                    <source>8</source>
+                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                </configuration>
+                -->
             </plugin>
         </plugins>
     </build>
@@ -97,7 +103,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
@@ -122,6 +128,16 @@
             <groupId>ch.ethz.globis.phtree</groupId>
             <artifactId>phtree</artifactId>
             <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.hsr</groupId>
+            <artifactId>geohash</artifactId>
+            <version>1.4.0</version>
         </dependency>
     </dependencies>
 </project>

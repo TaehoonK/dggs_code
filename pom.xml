@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>aist.dprt</groupId>
     <artifactId>dggs-code</artifactId>
-    <version>0.8.3</version>
+    <version>0.9.0</version>
     <packaging>jar</packaging>
 
     <name>DGGS Morton Code</name>
@@ -88,12 +88,11 @@
                         </goals>
                     </execution>
                 </executions>
-                <!-- For mac OS
+                <!-- For mac OS -->
                 <configuration>
                     <source>8</source>
                     <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
                 </configuration>
-                -->
             </plugin>
         </plugins>
     </build>
@@ -132,6 +131,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.hsr</groupId>
+            <artifactId>geohash</artifactId>
+            <version>1.4.0</version>
         </dependency>
     </dependencies>
 </project>

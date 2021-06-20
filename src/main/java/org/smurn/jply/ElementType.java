@@ -25,68 +25,6 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-/**
- * Declaration of an element type.
- * <p>Each element in a PLY file has a type. The type defines what values
- * (properties) the element has.</p>
- * <p>Some element types are described in the PLY specification and should
- * only be used accordingly to ensure best compatibility with other
- * PLY applications.</p>
- * <dl>
- * <dt>{@code vertex}</dt>
- * <dd>Element type for vertex definitions. The {@code vertex} type should have
- * at least three (non-list) properties named {@code x}, {@code y} and {@code z}
- * for the position of the vertex. <br/>
- * The specification also mentions optional {@code red}, {@code green},
- * {@code blue} (non-list) properties to define the color of a vertex.<br/>
- * For more material properties a reference to a material definition can be
- * added to a vertex with the {@code material_index} property
- * (of an integer type). The value of that property is a (zero-based) index
- * to an element of type {@code material} (see below).</dd>
- * <dt>{@code face}</dt>
- * <dd>Element type for polygon definitions. The {@code face} type should have
- * at least one list-property called {@code vertex_index}, storing a list
- * of (zero-based) indicies into the {@code vertex} elements.<br/>
- * The indicies select the vertices that form the polygon. The vertices
- * should all lie on a common plane. There should be at least three
- * vertices per face.<br/>
- * Color and material of a polygon can be specified with the same properties
- * as used for vertices.
- * </dd>
- * <dt>{@code edge}</dt>
- * <dd>Element type for line segments. The {@code edge} type should
- * have at least two (non-list) properties {@code vertex1} and {@code vertex2},
- * storing a (zero-based) index into the {@code vertex} elements defining
- * the start and end point of the edge.<br/>
- * Color and material of an edge can be specified with the same properties
- * as used for vertices.</dd>
- * <dt>{@code material}</dt>
- * <dd>Type for material description elements. Each element describes
- * a material. Materials can be referenced from other elements using
- * the {@code material_index} property.<br>
- * There are several properties of a material mentioned in the specification:
- * <lu>
- * <li>{@code ambient_red}</li>
- * <li>{@code ambient_green}</li>
- * <li>{@code ambient_blue}</li>
- * <li>{@code ambient_coeff}</li>
- * <li>{@code diffuse_red}</li>
- * <li>{@code diffuse_green}</li>
- * <li>{@code diffuse_blue}</li>
- * <li>{@code diffuse_coeff}</li>
- * <li>{@code specular_red}</li>
- * <li>{@code specular_green}</li>
- * <li>{@code specular_blue}</li>
- * <li>{@code specular_coeff}</li>
- * <li>{@code specular_power}</li>
- * </lu>
- * </dd>
- * The data type mentioned in the specification is {@code float} for all
- * properties but indices where it should be {@code int} and color components
- * where it should be {@code uchar}.
- * </dl>
- * <p>All instances of this class are immutable.</p>
- */
 public final class ElementType {
 
     /** Name of this type. */

@@ -1,16 +1,51 @@
 package jp.go.aist.dggs.query;
 
 import ch.ethz.globis.phtree.PhTree;
+import jp.go.aist.dggs.geometry.Morton2D;
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import org.junit.Test;
 import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
 import jp.go.aist.dggs.geometry.Morton3D;
 import jp.go.aist.dggs.utils.MortonUtils;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 
 public class BBoxQueryTest {
+    @Test
+    public void translateQueryRange() {
+        File file = new File("queryresult.txt");
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(file);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+            printWriter.write("cell boundary\n");
+
+            int resolution = 21;
+            GeoCoordinates coordLL = new GeoCoordinates(35.23484897703, 129.08242161893, 0d);
+            GeoCoordinates coordRU = new GeoCoordinates(35.2355165472, 129.08282061646, 0d);
+            BBoxQuery.QueryPoint queryLL = new BBoxQuery.QueryPoint(coordLL, resolution);
+
+            ArrayList<BBoxQuery.QueryRange> queryList = BBoxQuery.translateQueryRange(coordLL,coordRU,resolution);
+            for(BBoxQuery.QueryRange qr : queryList) {
+                for(long x = qr.minPoint[0]; x <= qr.maxPoint[0]; x++) {
+                    for(long y = qr.minPoint[1]; y <= qr.maxPoint[1]; y++) {
+                        ISEA4DFaceCoordinates faceCoordinates = new ISEA4DFaceCoordinates(queryLL._face, x, y,resolution);
+                        ISEA4DCellBoundary cellBoundary = Morton2D.getBoundary(faceCoordinates);
+                        printWriter.write(cellBoundary.toString() + "\n");
+                    }
+                }
+            }
+            printWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void getBBoxQueryResults() {

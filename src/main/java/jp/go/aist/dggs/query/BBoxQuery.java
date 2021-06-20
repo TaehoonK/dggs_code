@@ -45,7 +45,7 @@ public class BBoxQuery {
         return result;
     }
 
-    private static ArrayList<QueryRange> translateQueryRange(GeoCoordinates coordLL, GeoCoordinates coordRU, int resolution) {
+    public static ArrayList<QueryRange> translateQueryRange(GeoCoordinates coordLL, GeoCoordinates coordRU, int resolution) {
         ArrayList<QueryRange> queryList         = new ArrayList<>();
         ArrayList<Long> bottomBoundaryValueList = new ArrayList<>();
         ArrayList<Long> topBoundaryValueList    = new ArrayList<>();

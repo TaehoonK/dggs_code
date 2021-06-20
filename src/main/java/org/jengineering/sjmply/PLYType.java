@@ -323,7 +323,7 @@ public abstract class PLYType<T>
   /** Type-safely casts an array to this property type's array representation.
    *  
    *  @param array The array to be casted.
-   *  @return <code>({@link #T}) array</code>
+   *  @return array
    */
   public T cast( Object array )
   {

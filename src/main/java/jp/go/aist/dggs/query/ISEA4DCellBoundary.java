@@ -31,6 +31,17 @@ public class ISEA4DCellBoundary {
         return boundary;
     }
 
+    @Override
+    public String toString() {
+        return "LINESTRING((" +
+                boundaryElements[0].coordinate.getLon() + " " + boundaryElements[0].coordinate.getLat() + "," +
+                boundaryElements[1].coordinate.getLon() + " " + boundaryElements[1].coordinate.getLat() + "," +
+                boundaryElements[2].coordinate.getLon() + " " + boundaryElements[2].coordinate.getLat() + "," +
+                boundaryElements[3].coordinate.getLon() + " " + boundaryElements[3].coordinate.getLat() + "," +
+                boundaryElements[0].coordinate.getLon() + " " + boundaryElements[0].coordinate.getLat() +
+                "))";
+    }
+
     static class BoundaryElement implements Comparable<BoundaryElement> {
         GeoCoordinates coordinate;
         double angle;

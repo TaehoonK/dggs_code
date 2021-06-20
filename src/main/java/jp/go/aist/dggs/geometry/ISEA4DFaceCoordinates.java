@@ -1,7 +1,6 @@
 package jp.go.aist.dggs.geometry;
 
 import jp.go.aist.dggs.common.DGGS;
-import jp.go.aist.dggs.utils.MortonUtils;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -108,8 +107,7 @@ public class ISEA4DFaceCoordinates {
     public double distance2DTo(ISEA4DFaceCoordinates another) {
         ISEA4DFaceCoordinates from = toOrthogonal();
         ISEA4DFaceCoordinates to = another.toOrthogonal();
-        return Math.sqrt(Math.pow(from.getX() - to.getY(), 2)
-                + Math.pow(from.getY() - to.getY(), 2));
+        return Math.sqrt(Math.pow(from.getX() - to.getX(), 2) + Math.pow(from.getY() - to.getY(), 2));
     }
 
     /**
@@ -144,6 +142,10 @@ public class ISEA4DFaceCoordinates {
         }
 
         return this;
+    }
+
+    public MeterFaceCoordinates toMeterUnit() {
+        return new MeterFaceCoordinates(this);
     }
 
     /**

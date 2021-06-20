@@ -13,7 +13,7 @@ import java.util.List;
  *
  * The ISEA projection is a projects a sphere on the icosahedron. Thereby the size of areas mapped to the icosahedron
  * are preserved. Angles and distances are however slightly distorted. The angular distortion is below 17.27 degree, and
- * the scale variation is less than 16.3 per cent.
+ * the scale variation is less than 16.3 percent.
  *
  * The projection has been proposed and has been described in detail by:
  *

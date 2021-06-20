@@ -1,5 +1,8 @@
 package jp.go.aist.dggs.utils;
 
+import ch.hsr.geohash.GeoHash;
+import ch.hsr.geohash.WGS84Point;
+import ch.hsr.geohash.util.VincentyGeodesy;
 import jp.go.aist.dggs.common.DGGS;
 import jp.go.aist.dggs.geometry.ISEA4DFaceCoordinates;
 import org.giscience.utils.geogrid.generic.Trigonometric;
@@ -7,7 +10,8 @@ import org.giscience.utils.geogrid.geometry.FaceCoordinates;
 import org.giscience.utils.geogrid.geometry.GeoCoordinates;
 import org.giscience.utils.geogrid.projections.ISEAProjection;
 import org.junit.Test;
-import static jp.go.aist.dggs.common.DGGS.*;
+
+import java.util.Objects;
 import static org.junit.Assert.*;
 
 public class MortonUtilsTest {
@@ -185,6 +189,70 @@ public class MortonUtilsTest {
             System.out.println("lat:" + latitude +", long:" + longitude + ", height:" + height + ", r:" + resolution +
                     ", F_coord.x:" + morton.getX() + ", F_coord.y:" + morton.getY() + ", F_coord.z:" + morton.getZ() + ", f:" + morton.getFace() +
                     ", c.lat:" + coordinate.getLat() + ", c.lon:" + coordinate.getLon() + ", c.height:" + coordinate.getHeight());
+        }
+    }
+
+    @Test
+    public void compareWithGeohash() {
+        WGS84Point points[] = new WGS84Point[] {
+                new WGS84Point(0, 0),
+                new WGS84Point(10,0),
+                new WGS84Point(20,0),
+                new WGS84Point(30,0),
+                new WGS84Point(40,0),
+                new WGS84Point(50,0),
+                new WGS84Point(60,0),
+                new WGS84Point(70,0),
+                new WGS84Point(80,0),
+                new WGS84Point(89,0)
+//                new WGS84Point(0, 0),
+//                new WGS84Point(0, 10),
+//                new WGS84Point(0, 20),
+//                new WGS84Point(0, 30),
+//                new WGS84Point(0, 40),
+//                new WGS84Point(0, 50),
+//                new WGS84Point(0, 60),
+//                new WGS84Point(0, 70),
+//                new WGS84Point(0, 80),
+//                new WGS84Point(0, 89),
+//                new WGS84Point(0, 100),
+//                new WGS84Point(0, 110),
+//                new WGS84Point(0, 120),
+//                new WGS84Point(0, 130),
+//                new WGS84Point(0, 140),
+//                new WGS84Point(0, 150),
+//                new WGS84Point(0, 160),
+//                new WGS84Point(0, 170),
+//                new WGS84Point(0, 179)
+        };
+
+        for (WGS84Point point : points) {
+            System.out.println(point.getLongitude());
+            WGS84Point nearPoint = VincentyGeodesy.moveInDirection(point, 0d, 1);
+            System.out.println("WGS 1 meter: " + VincentyGeodesy.distanceInMeters(point, nearPoint));
+            ISEA4DFaceCoordinates isea4DFaceCoordinateA = MortonUtils.toFaceCoordinate(Objects.requireNonNull(MortonUtils.toFaceCoordinate(new GeoCoordinates(point.getLatitude(), point.getLongitude()))),32);
+            ISEA4DFaceCoordinates isea4DFaceCoordinateB = MortonUtils.toFaceCoordinate(Objects.requireNonNull(MortonUtils.toFaceCoordinate(new GeoCoordinates(nearPoint.getLatitude(), nearPoint.getLongitude()))),32);
+            GeoCoordinates geocoords_from = MortonUtils.toGeoCoordinate(isea4DFaceCoordinateA);
+            GeoCoordinates geocoords_to = MortonUtils.toGeoCoordinate(isea4DFaceCoordinateB);
+            System.out.println("ISEA 1 meter: " + VincentyGeodesy.distanceInMeters(new WGS84Point(geocoords_from.getLat(), geocoords_from.getLon()), new WGS84Point(geocoords_to.getLat(), geocoords_to.getLon())));
+            System.out.println("ISEA distance: " + isea4DFaceCoordinateA.distance2DTo(isea4DFaceCoordinateB) * 0.001662828);
+        }
+
+        for (WGS84Point point : points) {
+            GeoHash geoHash = GeoHash.withCharacterPrecision(point.getLatitude(), point.getLongitude(), 12);
+            GeoHash geoHash_plus_1bit = geoHash.getAdjacent()[1];
+            WGS84Point from = geoHash.getBoundingBoxCenter();
+            WGS84Point to = geoHash_plus_1bit.getBoundingBoxCenter();
+
+            System.out.println("Geohash: " + VincentyGeodesy.distanceInMeters(from, to));
+            //System.out.println("Geohash: " + DistanceUtils.distVincentyRAD(from.getLatitude(),from.getLongitude(),to.getLatitude(),to.getLongitude()));
+
+
+            ISEA4DFaceCoordinates isea4DFaceCoordinates = MortonUtils.toFaceCoordinate(Objects.requireNonNull(MortonUtils.toFaceCoordinate(new GeoCoordinates(point.getLatitude(), point.getLongitude()))),28);
+            ISEA4DFaceCoordinates isea4DFaceCoordinates_plus_1 = new ISEA4DFaceCoordinates(isea4DFaceCoordinates.getFace(), isea4DFaceCoordinates.getX() + 1, isea4DFaceCoordinates.getY(), isea4DFaceCoordinates.getZ(), isea4DFaceCoordinates.getResolution());
+            GeoCoordinates geocoords_from = MortonUtils.toGeoCoordinate(isea4DFaceCoordinates);
+            GeoCoordinates geocoords_to = MortonUtils.toGeoCoordinate(isea4DFaceCoordinates_plus_1);
+            System.out.println("ISEA: " + VincentyGeodesy.distanceInMeters(new WGS84Point(geocoords_from.getLat(), geocoords_from.getLon()), new WGS84Point(geocoords_to.getLat(), geocoords_to.getLon())));
         }
     }
 }
