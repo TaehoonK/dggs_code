@@ -6,6 +6,7 @@ import static jp.go.aist.dggs.common.DGGS.EIGHT_BIT_MASK;
 import static jp.go.aist.dggs.common.DGGS.Morton2DTable256Encode;
 
 public class MeterFaceCoordinates {
+    private final double _meter_unit = 0.00166282891483159;
     private final int _local_resolution = 9;
     private final int _face;
     private final float _x;
@@ -23,9 +24,9 @@ public class MeterFaceCoordinates {
         ISEA4DFaceCoordinates fixedFaceCoords = Morton3D.decode(sb.toString()).toOrthogonal();
         ISEA4DFaceCoordinates orthogonalCoords = faceCoordinates.toOrthogonal();
 
-        _x = (float) ((orthogonalCoords.getX() - fixedFaceCoords.getX()) * 0.00166282891483159);
-        _y = (float) ((orthogonalCoords.getY() - fixedFaceCoords.getY()) * 0.00166282891483159);
-        _z = (float) ((orthogonalCoords.getZ() - fixedFaceCoords.getZ()) * 0.00166282891483159);
+        _x = (float) ((orthogonalCoords.getX() - fixedFaceCoords.getX()) * _meter_unit);
+        _y = (float) ((orthogonalCoords.getY() - fixedFaceCoords.getY()) * _meter_unit);
+        _z = (float) ((orthogonalCoords.getZ() - fixedFaceCoords.getZ()) * _meter_unit);
     }
 
     private int getIntFace(String localMorton) {
