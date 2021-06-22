@@ -8,10 +8,9 @@ import org.junit.Test;
 
 import java.util.Objects;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertEquals;
 
 public class MeterFaceCoordinatesTest {
-    private final float delta = 0.0000001f;
 
     @Test
     public void toLocal_temp() {
@@ -24,7 +23,8 @@ public class MeterFaceCoordinatesTest {
         MeterFaceCoordinates meterFaceCoordA = faceCoordinateA.toMeterUnit();
         MeterFaceCoordinates meterFaceCoordB = faceCoordinateB.toMeterUnit();
 
-        assertNotEquals(meterFaceCoordA.getFace(), meterFaceCoordB.getFace());
+        System.out.println(meterFaceCoordA.getFace() + "," + meterFaceCoordB.getFace());
+        assertEquals(meterFaceCoordA.getFace(), meterFaceCoordB.getFace());
     }
 
     @Test
