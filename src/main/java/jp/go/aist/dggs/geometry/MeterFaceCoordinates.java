@@ -2,8 +2,8 @@ package jp.go.aist.dggs.geometry;
 
 import jp.go.aist.dggs.common.DGGS;
 
-import static jp.go.aist.dggs.common.DGGS.EIGHT_BIT_MASK;
-import static jp.go.aist.dggs.common.DGGS.Morton2DTable256Encode;
+import static jp.go.aist.dggs.common.DGGS.*;
+import static jp.go.aist.dggs.common.DGGS.H_RANGE;
 
 public class MeterFaceCoordinates {
     private final double _meter_unit = 0.00166282891483159;
@@ -26,7 +26,7 @@ public class MeterFaceCoordinates {
 
         _x = (float) ((orthogonalCoords.getX() - fixedFaceCoords.getX()) * _meter_unit);
         _y = (float) ((orthogonalCoords.getY() - fixedFaceCoords.getY()) * _meter_unit);
-        _z = (float) ((orthogonalCoords.getZ() - fixedFaceCoords.getZ()) * _meter_unit);
+        _z = (float) (faceCoordinates.getMaxZ() <= 1 ? 0 : (orthogonalCoords.getZ() * 2.0d * H_RANGE) / faceCoordinates.getMaxZ() - H_RANGE);
     }
 
     private int getIntFace(String localMorton) {
