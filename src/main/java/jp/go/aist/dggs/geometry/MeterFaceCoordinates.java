@@ -7,7 +7,7 @@ import static jp.go.aist.dggs.common.DGGS.H_RANGE;
 
 public class MeterFaceCoordinates {
     private final double _meter_unit = 0.00166282891483159;
-    private final int _local_resolution = 9;
+    private final int _local_resolution = 8;
     private final int _face;
     private final float _x;
     private final float _y;

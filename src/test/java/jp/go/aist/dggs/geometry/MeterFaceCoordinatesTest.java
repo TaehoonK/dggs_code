@@ -66,7 +66,7 @@ public class MeterFaceCoordinatesTest {
             WGS84Point nearPoint = VincentyGeodesy.moveInDirection(point, 0d, 1);
             System.out.println("WGS 1 meter: " + VincentyGeodesy.distanceInMeters(point, nearPoint));
             ISEA4DFaceCoordinates isea4DFaceCoordinateA = MortonUtils.toFaceCoordinate(Objects.requireNonNull(MortonUtils.toFaceCoordinate(new GeoCoordinates(point.getLatitude(), point.getLongitude(), 10.0))), 32);
-            ISEA4DFaceCoordinates isea4DFaceCoordinateB = MortonUtils.toFaceCoordinate(Objects.requireNonNull(MortonUtils.toFaceCoordinate(new GeoCoordinates(nearPoint.getLatitude(), nearPoint.getLongitude(), 20.0))), 32);
+            ISEA4DFaceCoordinates isea4DFaceCoordinateB = MortonUtils.toFaceCoordinate(Objects.requireNonNull(MortonUtils.toFaceCoordinate(new GeoCoordinates(nearPoint.getLatitude(), nearPoint.getLongitude(), -10.0))), 32);
 
             MeterFaceCoordinates meterFaceCoordA = isea4DFaceCoordinateA.toMeterUnit();
             MeterFaceCoordinates meterFaceCoordB = isea4DFaceCoordinateB.toMeterUnit();
