@@ -256,6 +256,6 @@ public final class DGGS {
     public static final double NEW_ORIG_Y       = -0.3477354707379958;
     // # Convert coordinates from skewed system to Cartesian system (origin at left)
     static final double[][] A           = {{1, (-1 / Math.sqrt(3))}, {1, (1 / Math.sqrt(3))}};
-    static final RealMatrix MATRIX_A    = MatrixUtils.createRealMatrix(A);
+    public static final RealMatrix MATRIX_A    = MatrixUtils.createRealMatrix(A);
     public static final RealMatrix MATRIX_A_INVERSE = MatrixUtils.blockInverse(MATRIX_A, 0);
 }

@@ -29,19 +29,52 @@ public class MeterFaceCoordinates {
         _z = (float) (faceCoordinates.getMaxZ() <= 1 ? 0 : (orthogonalCoords.getZ() * 2.0d * H_RANGE) / faceCoordinates.getMaxZ() - H_RANGE);
     }
 
+    public MeterFaceCoordinates(int localFace, float x, float y, float z) {
+        _face = localFace;
+        _x = x;
+        _y = y;
+        _z = z;
+    }
+
+    public ISEA4DFaceCoordinates toISEA4DFaceCoordinates() {
+        String localMorton = String.valueOf(this.getFace());
+        StringBuilder sb = new StringBuilder(localMorton);
+        for (int i = 0; i < DGGS.MAX_XY_RESOLUTION - _local_resolution; i++) {
+            sb.append('0');
+        }
+        ISEA4DFaceCoordinates fixedFaceCoords = Morton3D.decode(sb.toString()).toOrthogonal();
+
+        long orthogonal_x = (long) (this.getX() / _meter_unit + fixedFaceCoords.getX());
+        long orthogonal_y = (long) (this.getY() / _meter_unit + fixedFaceCoords.getY());
+        long orthogonal_z = (long) ((this.getZ() + H_RANGE) * fixedFaceCoords.getMaxZ() / (H_RANGE * 2.0d));
+        int face = Integer.parseInt(localMorton.substring(0,1));
+        ISEA4DFaceCoordinates newOrthogonalFaceCoords = new ISEA4DFaceCoordinates(face, orthogonal_x, orthogonal_y, orthogonal_z, MAX_XY_RESOLUTION, true);
+
+        return  newOrthogonalFaceCoords.fromOrthogonalToDGGS();
+    }
+
     private int getIntFace(String localMorton) {
-        ISEA4DFaceCoordinates localFace = Morton3D.decode(localMorton, _local_resolution);
-        int x = (int) localFace.getX();
-        int y = (int) localFace.getY();
-        int z = (int) localFace.getZ();
         int _int_face = 0;
-        _int_face = _int_face
-                | localFace.getFace() << 19
-                | Morton2DTable256Encode[(int) (y & EIGHT_BIT_MASK)] << 4
-                | Morton2DTable256Encode[(int) (x & EIGHT_BIT_MASK)] << 3
-                | (z & 0x00000001) << 2
-                | (y & 0x00000001) << 1
-                | (x & 0x00000001);
+        if(localMorton.length() <= 9) {
+            _int_face = Integer.parseInt(localMorton);
+        }
+        else {
+            // TODO: Currently, not necessary
+            System.out.println("face index value is over than Integer.MAX_VALUE");
+
+            ISEA4DFaceCoordinates localFace = Morton3D.decode(localMorton, _local_resolution);
+            int x = (int) localFace.getX();
+            int y = (int) localFace.getY();
+            int z = (int) localFace.getZ();
+            _int_face = _int_face
+                    | localFace.getFace() << 19
+                    | Morton2DTable256Encode[(int) (y & EIGHT_BIT_MASK)] << 4
+                    | Morton2DTable256Encode[(int) (x & EIGHT_BIT_MASK)] << 3
+                    | (z & 0x00000001) << 2
+                    | (y & 0x00000001) << 1
+                    | (x & 0x00000001);
+        }
+
         return _int_face;
     }
 
@@ -72,15 +105,15 @@ public class MeterFaceCoordinates {
      * @return 2-D distance
      * */
     public double distance2DTo(MeterFaceCoordinates another) {
-        MeterFaceCoordinates from = this;
-        MeterFaceCoordinates to = another;
-        return Math.sqrt(Math.pow(from.getX() - to.getX(), 2) + Math.pow(from.getY() - to.getY(), 2));
+        return Math.sqrt(Math.pow(this.getX() - another.getX(), 2) + Math.pow(this.getY() - another.getY(), 2));
+    }
+
+    public double distance3DTo(MeterFaceCoordinates another) {
+        return Math.sqrt(Math.pow(this.getX() - another.getX(), 2) + Math.pow(this.getY() - another.getY(), 2) + Math.pow(this.getZ() - another.getZ(), 2));
     }
 
     @Override
     public String toString() {
         return String.format("face %d x %f y %f z %f", this._face, this._x, this._y, this._z);
     }
-
-
 }

@@ -225,12 +225,12 @@ public final class MortonUtils {
         double[] b = {scaledX, scaledY};
         RealMatrix rmb = MatrixUtils.createColumnRealMatrix(b); // MatrixUtils.createColumnRealMatrix -- a columnData x 1 FieldMatrix
         RealMatrix rmx = MATRIX_A_INVERSE.multiply(rmb); // MatrixUtils.createRowRealMatrix -- a 1 x rowData.length RealMatrix
-        double xCoord = rmx.getData()[0][0];
-        double yCoord = rmx.getData()[1][0];
+        double xCoords = rmx.getData()[0][0];
+        double yCoords = rmx.getData()[1][0];
 
         // # Get triangle face from rhombus face based on values of y.
         // # If y is negative, triangles will be downward oriented
-        if (yCoord >= 0) {
+        if (yCoords >= 0) {
             if (face == 0) {
                 face = 0;
             } else if (face == 1) {
@@ -281,11 +281,11 @@ public final class MortonUtils {
         double xOrigin;
         double yOrigin;
 
-        xOrigin = xCoord + NEW_ORIG_X;
+        xOrigin = xCoords + NEW_ORIG_X;
         if ((face >= 0 && face <= 4) || (face >= 10 && face <= 14)) {
-            yOrigin = yCoord + NEW_ORIG_Y;
+            yOrigin = yCoords + NEW_ORIG_Y;
         } else {
-            yOrigin = yCoord - NEW_ORIG_Y;
+            yOrigin = yCoords - NEW_ORIG_Y;
         }
 
         try {

@@ -4,6 +4,7 @@ import jp.go.aist.dggs.common.DGGS;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 
+import static jp.go.aist.dggs.common.DGGS.MATRIX_A;
 import static jp.go.aist.dggs.common.DGGS.MATRIX_A_INVERSE;
 
 /**
@@ -117,9 +118,11 @@ public class ISEA4DFaceCoordinates {
      * @return 3-D distance
      * */
     public Double distance3DTo(ISEA4DFaceCoordinates another) {
-        ISEA4DFaceCoordinates from = toOrthogonal();
-        ISEA4DFaceCoordinates to = another.toOrthogonal();
-        return Math.sqrt(Math.pow(from.getX() - to.getY(), 2)
+        MeterFaceCoordinates from = toMeterUnit();
+        MeterFaceCoordinates to = another.toMeterUnit();
+
+        return Math.sqrt(
+                Math.pow(from.getX() - to.getX(), 2)
                 + Math.pow(from.getY() - to.getY(), 2)
                 + Math.pow(from.getZ() - to.getZ(), 2));
     }
@@ -144,8 +147,36 @@ public class ISEA4DFaceCoordinates {
         return this;
     }
 
+    /**
+     * Generate the ISEA4D coordinates from this orthogonal coordinates.
+     *
+     * @return The coordinates on ISEA face
+     * */
+    public ISEA4DFaceCoordinates fromOrthogonalToDGGS() {
+        if(_isOrthogonal) {
+            double[] b = {this._x, this._y};
+            RealMatrix matrix_B = MatrixUtils.createColumnRealMatrix(b);
+            RealMatrix rmx = MATRIX_A.multiply(matrix_B);
+
+            long dggs_x = Double.valueOf(rmx.getData()[0][0]).longValue();
+            long dggs_y = Double.valueOf(rmx.getData()[1][0]).longValue();
+
+            return new ISEA4DFaceCoordinates(_face, dggs_x, dggs_y, _z, _res, false);
+        }
+
+        return this;
+    }
+
+    /**
+     * Generate the meter unit coordinates from this ISEA coordinates.
+     *
+     * @return The meter unit coordinates on ISEA face
+     * */
     public MeterFaceCoordinates toMeterUnit() {
-        return new MeterFaceCoordinates(this);
+        if (!_isOrthogonal)
+            return new MeterFaceCoordinates(this);
+        else
+            return new MeterFaceCoordinates(fromOrthogonalToDGGS());
     }
 
     /**
