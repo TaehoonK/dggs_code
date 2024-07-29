@@ -3,12 +3,12 @@
 ![Tag version](https://img.shields.io/github/v/tag/TaehoonK/dggs_code)
 
 
-# Java PD-Code Library
+# P-Code Java Library
 
-This Java library supports to handling 3D PD-Code (e.g., encoding and decoding.)
+This Java library supports to handling 3D P-Code (e.g., encoding and decoding.)
 
-Note that, PD-Code is one of type of Morton code, especially DGGS Morton for the point cloud.
-It is introduced from "Utilizing a discrete global grid system for handling point clouds with varying locations, times, and levels of detail."
+Note that P-Code is one type of Morton code, especially DGGS Morton for the point cloud.
+It is introduced by "Utilizing a discrete global grid system for handling point clouds with varying locations, times, and levels of detail."
 
 From the 0.5.0 version, this project includes the [Geogrid project](https://github.com/mocnik-science/geogrid) code for using ISEA projection. It is a modified fit for this project.
 
@@ -17,7 +17,7 @@ From the 0.5.0 version, this project includes the [Geogrid project](https://gith
 - Java: 1.8+
 
 ## How to use
-- Using Maven: Put below code in your POM file
+- Using Maven: Put the below code in your POM file
 ```xml
 <repositories>
     <repositories>
